@@ -1,0 +1,35 @@
+body {
+  background-color: #f0f0f0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+}
+
+#todo_list {
+  width: 400px;
+
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+#todo_list > div {
+  margin-bottom: 10px;
+}
+
+#todo_list > div:last-child {
+  margin-bottom: 0;
+}
+
+#todo_list > div > div {
+  margin-bottom: 5px;
+}
+
