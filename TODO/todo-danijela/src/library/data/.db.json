@@ -1,0 +1,29 @@
+{
+  "authors": [
+    [
+      "e29bb395-2c84-4cf4-889d-61e65446effa",
+      {
+        "id": "e29bb395-2c84-4cf4-889d-61e65446effa",
+        "name": "John Smith",
+        "email": "john.smith@test.com",
+        "birthday": "1981-23-05T00:00:00.000Z",
+        "bio": "A lovely person"
+      }
+    ]
+  ],
+  "books": [
+    [
+      "171d8973-5ed6-469c-b982-830316f9e664",
+      {
+        "id": "171d8973-5ed6-469c-b982-830316f9e664",
+        "title": "Kubernetes: Everything about containers",
+        "authors": [
+          "e29bb395-2c84-4cf4-889d-61e65446effa"
+        ],
+        "description": "One of the worst books ever written",
+        "pages": 125,
+        "isbn": "237287187382738672637"
+      }
+    ]
+  ]
+}
