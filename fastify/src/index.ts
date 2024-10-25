@@ -4,7 +4,9 @@ import * as dotenv from 'dotenv'
 import Fastify from 'fastify'
 
 import { registerAuthorizationStrategy } from './middlewares/auth.strategy'
-import { registerUserSchemasAndRoutes } from './modules/user/user.route'
+import { routesMovie } from './modules/movie/movie.routes'
+import { registerSchema } from './modules/schema'
+import { routesUser } from './modules/user/user.route'
 
 dotenv.config()
 
@@ -14,8 +16,10 @@ async function startServer() {
   // AUTHORIZATION STRATEGY
   registerAuthorizationStrategy(app)
 
-  // ROUTES WITH SCHEMAS
-  registerUserSchemasAndRoutes(app)
+  registerSchema(app)
+
+  app.register(routesMovie, { prefix: 'api/movies' })
+  app.register(routesUser, { prefix: 'api/users' })
 
   const { PORT = '19200' } = process.env
   await app.listen({ host: '0.0.0.0', port: parseInt(PORT) })

@@ -83,6 +83,8 @@ yarn migrate_deploy
 yarn migrate_dev
 ```
 
+If having issues with running migration, comment out `kubectl port-forward svc/fastify-postgres 5432:5432 --address=0.0.0.0 &` in `start-postgres.sh`, start postgres service and forward port to 5432 in RancherDesktop
+
 - Generate Prisma client
 
 ```bash

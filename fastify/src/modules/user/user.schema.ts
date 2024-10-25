@@ -1,5 +1,6 @@
-import { buildJsonSchemas } from 'fastify-zod'
 import { z } from 'zod'
+
+// import { createMovieResponseSchema, createMovieSchema } from '../movie/movie.schema'
 
 // data that we need from user to register
 const createUserSchema = z.object({
@@ -33,11 +34,10 @@ export type LoginUserInput = z.infer<typeof loginSchema>
 const loginResponseSchema = z.object({
   accessToken: z.string(),
 })
-// to build our JSON schema, we use buildJsonSchemas from fastify-zod
-// it returns all the schemas to register and a ref to refer these schemas
-export const { schemas: userSchemas, $ref } = buildJsonSchemas({
+
+export const schemaUser = {
   createUserSchema,
   createUserResponseSchema,
   loginSchema,
   loginResponseSchema,
-})
+}

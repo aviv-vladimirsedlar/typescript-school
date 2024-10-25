@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import jwt from 'jsonwebtoken'
 
+import { cleanString } from '../../common/util/string.util'
 import prisma from '../../config/prisma.db'
 
 import { CreateUserInput, LoginUserInput } from './user.schema'
@@ -10,8 +11,12 @@ const SALT_ROUNDS = 10
 const JWT_SECRET = process.env.JWT_SECRET || 'a-very-strong-secret'
 const authorizationStrategy = process.env.AUTHORIZATION_STRATEGY || 'cookie'
 
+/***********************************************************************************************************************
+ * CREATE USER
+ **********************************************************************************************************************/
 export async function createUser(req: FastifyRequest<{ Body: CreateUserInput }>, reply: FastifyReply) {
-  const { password, email, firstName, lastName } = req.body
+  const { password, firstName, lastName } = req.body
+  const email = cleanString(req.body.email) // TODO: improve with adding pipe to zod schema
   const user = await prisma.user.findUnique({
     where: { email: email },
   })
@@ -31,9 +36,28 @@ export async function createUser(req: FastifyRequest<{ Body: CreateUserInput }>,
   }
 }
 
-export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply: FastifyReply) => {
-  const { email, password } = req.body as { email: string; password: string }
+/***********************************************************************************************************************
+ * GET USERS
+ **********************************************************************************************************************/
+export async function getUsers(req: FastifyRequest, reply: FastifyReply) {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+    },
+  })
+  return reply.code(200).send(users)
+}
 
+/***********************************************************************************************************************
+ * LOGIN
+ **********************************************************************************************************************/
+export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply: FastifyReply) => {
+  const { password } = req.body as { email: string; password: string }
+
+  const email = cleanString(req.body.email)
   const user = await prisma.user.findUnique({ where: { email: email } })
   if (!user) {
     return reply.code(404).send({
@@ -60,8 +84,8 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
   // USING COOKIE
   if (authorizationStrategy === 'cookie') {
     const payload = { sub: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName }
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
-    reply.setCookie('access_token', token, {
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
+    reply.setCookie('access_token', accessToken, {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Only set to true in production
@@ -76,24 +100,15 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
       firstName: user.firstName,
       lastName: user.lastName,
     }
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
-    reply.send({ token, user: userResponse })
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
+    reply.send({ accessToken, user: userResponse })
   }
 }
 
+/***********************************************************************************************************************
+ * LOGOUT
+ **********************************************************************************************************************/
 export async function logout(req: FastifyRequest, reply: FastifyReply) {
   reply.clearCookie('access_token')
   return reply.send({ message: 'Logout successful' })
-}
-
-export async function getUsers(req: FastifyRequest, reply: FastifyReply) {
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-    },
-  })
-  return reply.code(200).send(users)
 }

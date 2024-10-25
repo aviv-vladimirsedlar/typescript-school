@@ -1,10 +1,11 @@
 import fastifyPassport from '@fastify/passport'
 import { FastifyInstance } from 'fastify'
 
-import { createUser, getUsers, login, logout } from './user.controller'
-import { $ref, userSchemas } from './user.schema'
+import { $ref } from '../schema'
 
-const userRoutes = async (app: FastifyInstance) => {
+import { createUser, getUsers, login, logout } from './user.controller'
+
+export const routesUser = async (app: FastifyInstance) => {
   app.get('/', { preValidation: fastifyPassport.authenticate('jwt', { session: false }) }, getUsers)
 
   app.post(
@@ -18,11 +19,4 @@ const userRoutes = async (app: FastifyInstance) => {
   app.delete('/logout', { preValidation: fastifyPassport.authenticate('jwt', { session: false }) }, logout)
 
   app.log.info('user routes registered')
-}
-
-export const registerUserSchemasAndRoutes = (app: FastifyInstance) => {
-  for (const schema of [...userSchemas]) {
-    app.addSchema(schema)
-  }
-  app.register(userRoutes, { prefix: 'api/users' })
 }
