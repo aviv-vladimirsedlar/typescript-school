@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import zodToJsonSchema from 'zod-to-json-schema';
 
 /***********************************************************************************************************************
  * REGISTER USER
@@ -73,10 +74,13 @@ const userAssingRolesResonseSchema = z.object({
 });
 
 export const schemaUser = {
-  loginSchema,
-  loginResponseSchema,
-  registerUserSchema,
-  registerUserResponseSchema,
-  userAssingRolesSchema,
-  userAssingRolesResonseSchema,
+  loginSchema: { ...zodToJsonSchema(loginSchema), $id: 'LoginSchema' },
+  loginResponseSchema: { ...zodToJsonSchema(loginResponseSchema), $id: 'LoginResponseSchema' },
+  registerUserSchema: { ...zodToJsonSchema(registerUserSchema), $id: 'RegisterUserSchema' },
+  registerUserResponseSchema: { ...zodToJsonSchema(registerUserResponseSchema), $id: 'RegisterUserResponseSchema' },
+  userAssingRolesSchema: { ...zodToJsonSchema(userAssingRolesSchema), $id: 'UserAssingRolesSchema' },
+  userAssingRolesResonseSchema: {
+    ...zodToJsonSchema(userAssingRolesResonseSchema),
+    $id: 'UserAssingRolesResonseSchema',
+  },
 };

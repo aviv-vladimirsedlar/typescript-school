@@ -4,13 +4,16 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { sanitizeEmail } from '../../common/util/string.util';
 import { authorize } from '../../middlewares/auth.strategy';
-import { $ref } from '../schema';
 
 import { userGetList, login, logout, register, userAssingRoles } from './user.controller';
-import { LoginUserInput, RegisterUserInput, UserAssignRolesInput } from './user.schema';
+import { LoginUserInput, RegisterUserInput, schemaUser, UserAssignRolesInput } from './user.schema';
 
 export const routesUser = async (app: FastifyInstance) => {
-  app.get('/', { preHandler: fastifyPassport.authenticate('jwt', { session: false }) }, userGetList);
+  app.get(
+    '/',
+    { preHandler: fastifyPassport.authenticate('jwt', { session: false }), schema: { tags: ['User'] } },
+    userGetList,
+  );
 
   app.post(
     '/register',
@@ -20,7 +23,11 @@ export const routesUser = async (app: FastifyInstance) => {
           req.body.email = sanitizeEmail(req.body.email);
         }
       },
-      schema: { body: $ref('registerUserSchema'), response: { 201: $ref('registerUserResponseSchema') } },
+      schema: {
+        tags: ['User'],
+        body: schemaUser.registerUserSchema,
+        response: { 201: schemaUser.registerUserResponseSchema },
+      },
     },
     register,
   );
@@ -33,12 +40,16 @@ export const routesUser = async (app: FastifyInstance) => {
           req.body.email = sanitizeEmail(req.body.email);
         }
       },
-      schema: { body: $ref('loginSchema'), response: { 201: $ref('loginResponseSchema') } },
+      schema: { tags: ['User'], body: schemaUser.loginSchema, response: { 201: schemaUser.loginResponseSchema } },
     },
     login,
   );
 
-  app.delete('/logout', { preHandler: fastifyPassport.authenticate('jwt', { session: false }) }, logout);
+  app.delete(
+    '/logout',
+    { preHandler: fastifyPassport.authenticate('jwt', { session: false }), schema: { tags: ['User'] } },
+    logout,
+  );
 
   app.post(
     '/:id/assign-role',
@@ -50,7 +61,11 @@ export const routesUser = async (app: FastifyInstance) => {
           reply: FastifyReply,
         ) => await authorize(req, reply, ['assign_roles']),
       ],
-      schema: { body: $ref('userAssingRolesSchema'), response: { 201: $ref('userAssingRolesResonseSchema') } },
+      schema: {
+        tags: ['User'],
+        body: schemaUser.userAssingRolesSchema,
+        response: { 201: schemaUser.userAssingRolesResonseSchema },
+      },
     },
     userAssingRoles,
   );

@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import Fastify from 'fastify';
 
+import { registerSwagger } from './config/swagger';
 import { registerAuthorizationStrategy } from './middlewares/auth.strategy';
 import { routesMovie } from './modules/movie/movie.routes';
 import { registerSchema } from './modules/schema';
@@ -16,8 +17,11 @@ async function startServer() {
   // AUTHORIZATION STRATEGY
   registerAuthorizationStrategy(app);
 
+  // REGISTER SWAGGER AND SCHEMA
+  registerSwagger(app);
   registerSchema(app);
 
+  // REGISTER ROUTES
   app.register(routesMovie, { prefix: 'api/movies' });
   app.register(routesUser, { prefix: 'api/users' });
 

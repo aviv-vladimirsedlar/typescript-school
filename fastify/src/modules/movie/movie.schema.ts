@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import zodToJsonSchema from 'zod-to-json-schema';
 
 const createMovieSchema = z.object({
   title: z.string(),
@@ -60,10 +61,10 @@ const deleteMovieResponseSchema = z.object({
 });
 
 export const schemaMovie = {
-  createMovieSchema,
-  createMovieResponseSchema,
-  deleteMovieResponseSchema,
-  getMovieResponseSchema,
-  updateMovieSchema,
-  updateMovieResponseSchema,
+  createMovieSchema: { ...zodToJsonSchema(createMovieSchema), $id: 'CreateMovieSchema' },
+  createMovieResponseSchema: { ...zodToJsonSchema(createMovieResponseSchema), $id: 'CreateMovieResponseSchema' },
+  deleteMovieResponseSchema: { ...zodToJsonSchema(deleteMovieResponseSchema), $id: 'DeleteMovieResponseSchema' },
+  getMovieResponseSchema: { ...zodToJsonSchema(getMovieResponseSchema), $id: 'GetMovieResponseSchema' },
+  updateMovieSchema: { ...zodToJsonSchema(updateMovieSchema), $id: 'UpdateMovieSchema' },
+  updateMovieResponseSchema: { ...zodToJsonSchema(updateMovieResponseSchema), $id: 'UpdateMovieResponseSchema' },
 };

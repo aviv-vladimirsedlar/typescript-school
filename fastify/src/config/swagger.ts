@@ -1,13 +1,25 @@
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 export const registerSwagger = async (app: FastifyInstance) => {
-  const swagger = await import('@fastify/swagger');
-  app.register(swagger.default);
-
-  app.register(import('@fastify/swagger-ui'), {
-    routePrefix: '/documentation',
+  app.register(swagger, {
+    swagger: {
+      info: {
+        title: 'Fastify Movie API',
+        description: 'API documentation for the Movie API with RBAC',
+        version: '1.0.0',
+      },
+      tags: [
+        { name: 'User', description: 'User-related endpoints' },
+        { name: 'Movie', description: 'Movie-related endpoints' },
+      ],
+    },
+  });
+  app.register(swaggerUi, {
+    routePrefix: '/docs',
     uiConfig: {
-      docExpansion: 'full',
+      docExpansion: 'list',
       deepLinking: false,
     },
     uiHooks: {

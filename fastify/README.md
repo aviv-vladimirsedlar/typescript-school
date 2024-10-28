@@ -16,6 +16,7 @@ This project is a starter template for building a Fastify API with authenticatio
 - **Prisma ORM**: Manages database models and relationships between `User`, `Role`, `RoleAllowed`, `UserRole`, and `Movie`.
 - **Input Validation**: Uses Zod to validate incoming data, ensuring required fields and formats.
 - **Middleware**: Custom middleware for authorization, verifying that users have permissions based on their role.
+- **Docs - Swagger UI**: After starting the server, access the Swagger UI at /docs.
 
 ## Endpoints
 
@@ -29,6 +30,8 @@ This project is a starter template for building a Fastify API with authenticatio
   - `GET /api/movies`: View all movies (all roles).
   - `PUT /api/movies/:id`: Edit a movie (admin, or author for own movies).
   - `DELETE /api/movies/:id`: Delete a movie (admin, or author for own movies).
+- **Swagger - docs**:
+  - `GET /docs`: Swagger documentation
 
 ## Technologies Used
 
@@ -43,18 +46,18 @@ This project is a starter template for building a Fastify API with authenticatio
 ```graph
 .
 ├── src
+│   ├── common           # Common (Types, Util)
 │   ├── config           # Configurations (Prisma, Passport, JWT)
+│   ├── middlewares      # Middlewares (Authorization)
 │   ├── modules          # Business logic modules (e.g., user)
-│   └── server.ts        # Fastify server setup
+│   └── index.ts         # Fastify server setup
 ├── prisma
 │   ├── schema.prisma    # Prisma schema definition
-├── k8s
-│   ├── fastify-deployment.yml  # Fastify deployment config
-│   └── postgres-deployment.yml # PostgreSQL deployment config
+│   └── migrations       # Prisma migrations
 ├── .env.example         # Environment variables example file
 ├── docker-compose.yml   # Docker setup for PostgreSQL
-├── k8s-start.sh         # Start Kubernetes services
-└── k8s-stop.sh          # Stop Kubernetes services
+├── start-postgres.sh    # Start Kubernetes services
+└── stop-postgres.sh     # Stop Kubernetes services
 ```
 
 ## Prerequisites
@@ -148,5 +151,6 @@ npm run format
 
 ## TODO:
 
-- add swagger
+- add winston logger
+- improve loading of schemas and routes - automate process
 - add testing tools
