@@ -11,6 +11,15 @@ import { CreateMovieInput, UpdateMovieInput } from './movie.schema';
 export const routesMovie = async (app: FastifyInstance) => {
   app.get('/', { preHandler: fastifyPassport.authenticate('jwt', { session: false }) }, getMovies);
 
+  app.get(
+    '/:id',
+    {
+      preHandler: fastifyPassport.authenticate('jwt', { session: false }),
+      schema: { response: { 201: $ref('getMovieResponseSchema') } },
+    },
+    getMovie,
+  );
+
   app.post(
     '/create',
     {
@@ -35,15 +44,6 @@ export const routesMovie = async (app: FastifyInstance) => {
       schema: { body: $ref('updateMovieSchema'), response: { 201: $ref('updateMovieResponseSchema') } },
     },
     updateMovie,
-  );
-
-  app.get(
-    '/:id',
-    {
-      preHandler: fastifyPassport.authenticate('jwt', { session: false }),
-      schema: { response: { 201: $ref('getMovieResponseSchema') } },
-    },
-    getMovie,
   );
 
   app.delete(

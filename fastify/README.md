@@ -4,11 +4,39 @@ This project is a starter template for building a Fastify API with authenticatio
 
 ## Features
 
-- **Authorization**: JWT-based authentication with `passport`, storing tokens in secure HTTP-only cookies.
-- **User Management**: Endpoints for user creation and login.
-- **Code Quality**: ESLint and Prettier are configured for consistent code style.
+- **Code Quality, Formatting and Linting**: Configured with ESLint and Prettier for code quality and consistent formatting.
 - **Database**: PostgreSQL with Prisma ORM for data modeling.
 - **Kubernetes**: Scripts to start and stop Kubernetes services. (Rancher Desktop)
+- **User Management**: Endpoints for user creation and login.
+- **User Authentication and Authorization**: JWT-based authentication with role-based authorization powered by `passport`.
+- **Roles and Permissions**: Roles (`admin`, `author`, `user`) control access to different actions:
+  - **Admin**: Full access to manage movies, users, and roles.
+  - **Author**: Can create, edit, and delete their own movies.
+  - **User**: Can view movies only.
+- **Prisma ORM**: Manages database models and relationships between `User`, `Role`, `RoleAllowed`, `UserRole`, and `Movie`.
+- **Input Validation**: Uses Zod to validate incoming data, ensuring required fields and formats.
+- **Middleware**: Custom middleware for authorization, verifying that users have permissions based on their role.
+
+## Endpoints
+
+- **Authentication**:
+  - `POST /api/users/register`: Register a new user with default `user` role.
+  - `POST /api/users/login`: Authenticate with email and password, receive JWT.
+- **Role Management**:
+  - `POST /users/:id/assign-role`: Assign a role to a user (admin only).
+- **Movies**:
+  - `POST /api/movies`: Create a movie (admin, author).
+  - `GET /api/movies`: View all movies (all roles).
+  - `PUT /api/movies/:id`: Edit a movie (admin, or author for own movies).
+  - `DELETE /api/movies/:id`: Delete a movie (admin, or author for own movies).
+
+## Technologies Used
+
+- **Fastify**: High-performance framework for Node.js with extensible plugin architecture.
+- **Prisma**: ORM for type-safe database access with PostgreSQL.
+- **Passport**: Authentication middleware with JWT strategy.
+- **Zod**: Schema validation for request data.
+- **PostgreSQL**: Relational database management for structured data.
 
 ## Project structure
 
@@ -77,6 +105,12 @@ cp .env.example .env
 yarn migrate_deploy
 ```
 
+- Seeding initial data
+
+```bash
+yarn migrate_deploy
+```
+
 - Initialize migrations - sync changes in schema
 
 ```bash
@@ -111,3 +145,8 @@ yarn start_dev
 npm run lint
 npm run format
 ```
+
+## TODO:
+
+- add swagger
+- add testing tools

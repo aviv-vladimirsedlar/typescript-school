@@ -15,7 +15,7 @@
     "migrate_dev": "prisma migrate dev",
     "migrate_deploy": "prisma migrate deploy",
     "prisma_generate": "prisma generate",
-    "seed_user": "ts-node ./prisma/seedUserAndRoles.ts",
+    "seed": "ts-node ./prisma/seed.ts",
     "format": "prettier --write .",
     "lint": "eslint . ",
     "lint_fix": "eslint . --fix"

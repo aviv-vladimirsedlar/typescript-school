@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';
 
-import { cleanString } from '../../common/util/string.util';
 import prisma from '../../config/prisma.db';
 
 import { LoginUserInput, RegisterUserInput, UserAssignRolesInput } from './user.schema';
@@ -29,10 +28,9 @@ const extractAndSanitizeRoles = (roles: { id: string; role: { name: string } }[]
  * REGISTER USER
  **********************************************************************************************************************/
 export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>, reply: FastifyReply) {
-  const { password, firstName, lastName } = req.body;
-  const email = cleanString(req.body.email); // TODO: improve with adding pipe to zod schema
+  const { email, password, firstName, lastName } = req.body;
   const user = await prisma.user.findUnique({
-    where: { email: email },
+    where: { email },
   });
   if (user) {
     return reply.code(401).send({
@@ -78,11 +76,9 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
  * REGISTER USER
  **********************************************************************************************************************/
 export async function userAssingRole(req: FastifyRequest<{ Body: RegisterUserInput }>, reply: FastifyReply) {
-  const { password, firstName, lastName } = req.body;
-  const email = cleanString(req.body.email); // TODO: improve with adding pipe to zod schema
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-  });
+  const { email, password, firstName, lastName } = req.body;
+
+  const user = await prisma.user.findUnique({ where: { email } });
   if (user) {
     return reply.code(401).send({
       message: 'User already exists with this email',
@@ -122,11 +118,10 @@ export async function userGetList(req: FastifyRequest, reply: FastifyReply) {
  * LOGIN
  **********************************************************************************************************************/
 export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply: FastifyReply) => {
-  const { password } = req.body as { email: string; password: string };
+  const { email, password } = req.body as { email: string; password: string };
 
-  const email = cleanString(req.body.email);
   const user = await prisma.user.findUnique({
-    where: { email: email },
+    where: { email },
     include: { roles: { include: { role: true } } },
   });
   if (!user) {
