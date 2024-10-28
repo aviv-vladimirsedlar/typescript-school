@@ -9,7 +9,7 @@ export default [
     languageOptions: { globals: globals.browser },
     plugins: { import: eslintPluginImport },
     rules: {
-      // Import order rule configuration
+      semi: 'error',
       'import/order': [
         'error',
         {

@@ -1,4 +1,4 @@
-import { JWT } from '@fastify/jwt'
+import { JWT } from '@fastify/jwt';
 
 type UserPayload = {
   id: string
@@ -26,8 +26,8 @@ declare module 'fastify' {
 }
 
 declare module 'fastify-passport' {
-  import { FastifyPluginCallback, FastifyRequest } from 'fastify'
-  import { Strategy } from 'passport'
+  import { FastifyPluginCallback, FastifyRequest } from 'fastify';
+  import { Strategy } from 'passport';
 
   export interface FastifyPassport {
     use(name: string, strategy: Strategy): FastifyPassport
@@ -37,6 +37,6 @@ declare module 'fastify-passport' {
     authenticate(strategy: string, options?: object): (req: FastifyRequest, res: any) => void
   }
 
-  const fastifyPassport: FastifyPassport
-  export default fastifyPassport
+  const fastifyPassport: FastifyPassport;
+  export default fastifyPassport;
 }

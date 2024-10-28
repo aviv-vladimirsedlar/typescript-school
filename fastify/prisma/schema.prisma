@@ -7,23 +7,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Movie {
+  id          String   @id @default(cuid())
+  description String
+  duration    Int
+  title       String   @unique
+  year        Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation("UserMoviesOwner", fields: [ownerId], references: [id])
+}
+
 model User {
-  id        String  @id @default(cuid())
-  email     String  @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   firstName String?
   lastName  String?
   password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  movies    Movie[] // Renamed to "movies" for clarity
+  movies Movie[]    @relation("UserMoviesOwner")
+  roles  UserRole[] @relation("UserRoleUser")
 }
 
-model Movie {
-  id          String @id @default(cuid())
-  description String
-  duration    Int
-  title       String @unique
-  year        Int
+model Role {
+  id   String @id @default(cuid())
+  name String @unique
 
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userRoles   UserRole[]    @relation("UserRoleRole")
+  roleAllowed RoleAllowed[] @relation("RoleAllowedRole")
+}
+
+model RoleAllowed {
+  id          String  @id @default(cuid())
+  action      String // e.g., "role_assign", "create_movie", "edit_movie", "view_movie"
+  description String?
+
+  roleId String
+  role   Role   @relation("RoleAllowedRole", fields: [roleId], references: [id])
+
+  @@unique([roleId, action])
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation("UserRoleUser", fields: [userId], references: [id])
+  roleId String
+  role   Role   @relation("UserRoleRole", fields: [roleId], references: [id])
 }
