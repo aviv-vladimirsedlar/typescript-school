@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-
 import * as dotenv from 'dotenv';
 import Fastify from 'fastify';
 
@@ -15,17 +14,25 @@ dotenv.config();
 const { PORT = '19200' } = process.env;
 const HOST = 'localhost';
 
-async function startServer() {
+// Factory function to build the Fastify server instance
+export function buildServer() {
   const app = Fastify();
   app.register(winstonLogger);
 
-  // AUTHORIZATION STRATEGY
+  // Authorization strategy and other plugins
   registerAuthorizationStrategy(app);
 
-  // REGISTER ROUTES, SCHEMA, SWAGGER
+  // Register routes, schemas, and Swagger
   registerSwagger(app);
   registerRoutes(app);
   registerSchema(app);
+
+  return app;
+}
+
+// Function to start the server in production
+async function startServer() {
+  const app = buildServer();
 
   await app.listen({ host: HOST, port: parseInt(PORT) });
 
@@ -38,12 +45,14 @@ async function startServer() {
   });
 }
 
-startServer()
-  .then(() => {
-    logger.info(`Server started successfully: http://${HOST}:${PORT}`);
-    logger.info(`Swagger:                     http://${HOST}:${PORT}/docs`);
-  })
-  .catch((err) => {
-    logger.error('Error starting server:', err);
-    process.exit(1);
-  });
+if (require.main === module) {
+  startServer()
+    .then(() => {
+      logger.info(`Server started successfully: http://${HOST}:${PORT}`);
+      logger.info(`Swagger:                     http://${HOST}:${PORT}/docs`);
+    })
+    .catch((err) => {
+      logger.error('Error starting server:', err);
+      process.exit(1);
+    });
+}

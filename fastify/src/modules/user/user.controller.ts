@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../../config/prisma.db';
 
 import { LoginUserInput, RegisterUserInput, UserAssignRolesInput } from './user.schema';
+import logger from '../../utils/logger.util';
 
 export const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'a-very-strong-secret';
@@ -64,6 +65,7 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
     };
     return reply.code(201).send(userResponse);
   } catch (e) {
+    logger.error('ERROR "register": ', e);
     return reply.code(500).send(e);
   }
 }
@@ -93,11 +95,10 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
       message: 'User not found',
     });
   }
+
   const isMatch = await bcrypt.compare(password, user.password);
   if (!user || !isMatch) {
-    return reply.code(401).send({
-      message: 'Invalid email or password',
-    });
+    return reply.code(401).send({ message: 'Invalid email or password' });
   }
 
   if (!user) {
@@ -170,6 +171,7 @@ export async function userAssingRoles(
   }
 
   const roles = await prisma.role.findMany({ where: { id: { in: rolesFiltered } } });
+
   try {
     await prisma.userRole.createMany({
       data: roles.map((role) => ({ userId, roleId: role.id })),
@@ -191,6 +193,7 @@ export async function userAssingRoles(
     };
     return reply.code(201).send(userResponse);
   } catch (e) {
+    logger.error('ERROR "userAssingRoles": ', e);
     return reply.code(500).send(e);
   }
 }
