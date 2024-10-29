@@ -2,19 +2,28 @@ import fastifyPassport from '@fastify/passport';
 import { User } from '@prisma/client';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-import { sanitizeEmail } from '../../common/util/string.util';
 import { authorize } from '../../middlewares/auth.strategy';
+import logger from '../../utils/logger.util';
+import { sanitizeEmail } from '../../utils/string.util';
 
 import { userGetList, login, logout, register, userAssingRoles } from './user.controller';
 import { LoginUserInput, RegisterUserInput, schemaUser, UserAssignRolesInput } from './user.schema';
 
 export const routesUser = async (app: FastifyInstance) => {
+  logger.info('USER  - routes registered');
+
+  /*********************************************************************************************************************
+  MARK: - get user list
+   ********************************************************************************************************************/
   app.get(
     '/',
     { preHandler: fastifyPassport.authenticate('jwt', { session: false }), schema: { tags: ['User'] } },
     userGetList,
   );
 
+  /*********************************************************************************************************************
+  MARK: - register user
+   ********************************************************************************************************************/
   app.post(
     '/register',
     {
@@ -32,6 +41,9 @@ export const routesUser = async (app: FastifyInstance) => {
     register,
   );
 
+  /*********************************************************************************************************************
+  MARK: - login
+   ********************************************************************************************************************/
   app.post(
     '/login',
     {
@@ -45,12 +57,18 @@ export const routesUser = async (app: FastifyInstance) => {
     login,
   );
 
+  /*********************************************************************************************************************
+  MARK: - logout
+   ********************************************************************************************************************/
   app.delete(
     '/logout',
     { preHandler: fastifyPassport.authenticate('jwt', { session: false }), schema: { tags: ['User'] } },
     logout,
   );
 
+  /*********************************************************************************************************************
+  MARK: - assign user rolse
+   ********************************************************************************************************************/
   app.post(
     '/:id/assign-role',
     {
@@ -69,6 +87,4 @@ export const routesUser = async (app: FastifyInstance) => {
     },
     userAssingRoles,
   );
-
-  app.log.info('USER - routes registered');
 };

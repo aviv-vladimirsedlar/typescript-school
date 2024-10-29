@@ -6,17 +6,17 @@ This project is a starter template for building a Fastify API with authenticatio
 
 - **Code Quality, Formatting and Linting**: Configured with ESLint and Prettier for code quality and consistent formatting.
 - **Database**: PostgreSQL with Prisma ORM for data modeling.
+- **Middleware**: Custom middleware for authorization, verifying that users have permissions based on their role.
 - **Kubernetes**: Scripts to start and stop Kubernetes services. (Rancher Desktop)
+- **Middleware**: Custom middleware for authorization, verifying that users have permissions based on their role.
+- **Prisma ORM**: Manages database models and relationships between `User`, `Role`, `RoleAllowed`, `UserRole`, and `Movie`.
+- **Swagger UI - Docs**: After starting the server, access the Swagger UI at /docs.
 - **User Management**: Endpoints for user creation and login.
 - **User Authentication and Authorization**: JWT-based authentication with role-based authorization powered by `passport`.
-- **Roles and Permissions**: Roles (`admin`, `author`, `user`) control access to different actions:
-  - **Admin**: Full access to manage movies, users, and roles.
-  - **Author**: Can create, edit, and delete their own movies.
-  - **User**: Can view movies only.
-- **Prisma ORM**: Manages database models and relationships between `User`, `Role`, `RoleAllowed`, `UserRole`, and `Movie`.
-- **Input Validation**: Uses Zod to validate incoming data, ensuring required fields and formats.
-- **Middleware**: Custom middleware for authorization, verifying that users have permissions based on their role.
-- **Docs - Swagger UI**: After starting the server, access the Swagger UI at /docs.
+  - **Roles and Permissions**: Roles (`admin`, `author`, `user`) control access to different actions:
+    - **Admin**: Full access to manage movies, users, and roles.
+    - **Author**: Can create, edit, and delete their own movies.
+    - **User**: Can view movies only.
 
 ## Endpoints
 
@@ -36,20 +36,25 @@ This project is a starter template for building a Fastify API with authenticatio
 ## Technologies Used
 
 - **Fastify**: High-performance framework for Node.js with extensible plugin architecture.
-- **Prisma**: ORM for type-safe database access with PostgreSQL.
+- **Jest**: Testing framework with a focus on simplicity and support for asynchronous tests.
 - **Passport**: Authentication middleware with JWT strategy.
-- **Zod**: Schema validation for request data.
+- **Prisma**: ORM for type-safe database access with PostgreSQL.
 - **PostgreSQL**: Relational database management for structured data.
+- **Supertest**: HTTP assertions and integration testing tool for testing Fastify endpoints and controllers.
+- **Winston**: Versatile logging library for handling multiple log levels, formats, and transports. Configured for structured logging and error monitoring.
+- **Zod**: Schema validation for request data.
 
 ## Project structure
 
 ```graph
 .
 ├── src
-│   ├── common           # Common (Types, Util)
 │   ├── config           # Configurations (Prisma, Passport, JWT)
-│   ├── middlewares      # Middlewares (Authorization)
-│   ├── modules          # Business logic modules (e.g., user)
+│   ├── middlewares      # Middlewares for handling requests (e.g., Authorization)
+│   ├── modules          # Business logic modules (e.g., user, movie, video)
+│   ├── plugins          # Custom Fastify plugins (e.g., schema loader, route autoloader)
+│   ├── types            # TypeScript custom types and interfaces
+│   ├── utils            # Utility functions (e.g., logging with Winston, string sanitization)
 │   └── index.ts         # Fastify server setup
 ├── prisma
 │   ├── schema.prisma    # Prisma schema definition
@@ -155,6 +160,4 @@ npm run format
 
 ## TODO:
 
-- add winston logger
-- improve loading of schemas and routes - automate process
 - add testing tools

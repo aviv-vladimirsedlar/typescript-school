@@ -2,7 +2,7 @@ import { z } from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
 
 /***********************************************************************************************************************
- * REGISTER USER
+ MARK: - register user
  **********************************************************************************************************************/
 const registerUserSchema = z.object({
   email: z.string(),
@@ -25,7 +25,7 @@ const registerUserResponseSchema = z.object({
 });
 
 /***********************************************************************************************************************
- * LOGIN USER
+ MARK: - login user
  **********************************************************************************************************************/
 const loginSchema = z.object({
   email: z
@@ -54,10 +54,10 @@ const loginResponseSchema = z.object({
 });
 
 /***********************************************************************************************************************
- * ASSING USER ROLES
+ MARK: - assign user roles
  **********************************************************************************************************************/
 const userAssingRolesSchema = z.object({
-  roleId: z.array(z.string()),
+  roleIds: z.array(z.string()),
 });
 export type UserAssignRolesInput = z.infer<typeof userAssingRolesSchema>;
 const userAssingRolesResonseSchema = z.object({

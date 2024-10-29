@@ -5,28 +5,29 @@ import Fastify from 'fastify';
 
 import { registerSwagger } from './config/swagger';
 import { registerAuthorizationStrategy } from './middlewares/auth.strategy';
-import { routesMovie } from './modules/movie/movie.routes';
+import { registerRoutes } from './modules/routes';
 import { registerSchema } from './modules/schema';
-import { routesUser } from './modules/user/user.route';
+import winstonLogger from './plugins/winston-logger.plugin';
+import logger from './utils/logger.util';
 
 dotenv.config();
 
+const { PORT = '19200' } = process.env;
+const HOST = 'localhost';
+
 async function startServer() {
-  const app = Fastify({ logger: true });
+  const app = Fastify();
+  app.register(winstonLogger);
 
   // AUTHORIZATION STRATEGY
   registerAuthorizationStrategy(app);
 
-  // REGISTER SWAGGER AND SCHEMA
+  // REGISTER ROUTES, SCHEMA, SWAGGER
   registerSwagger(app);
+  registerRoutes(app);
   registerSchema(app);
 
-  // REGISTER ROUTES
-  app.register(routesMovie, { prefix: 'api/movies' });
-  app.register(routesUser, { prefix: 'api/users' });
-
-  const { PORT = '19200' } = process.env;
-  await app.listen({ host: '0.0.0.0', port: parseInt(PORT) });
+  await app.listen({ host: HOST, port: parseInt(PORT) });
 
   const listeners = ['SIGINT', 'SIGTERM'];
   listeners.forEach((signal) => {
@@ -39,9 +40,10 @@ async function startServer() {
 
 startServer()
   .then(() => {
-    console.log(`Server started successfully at ${process.env.PORT}`);
+    logger.info(`Server started successfully: http://${HOST}:${PORT}`);
+    logger.info(`Swagger:                     http://${HOST}:${PORT}/docs`);
   })
   .catch((err) => {
-    console.error('Error starting server:', err);
+    logger.error('Error starting server:', err);
     process.exit(1);
   });

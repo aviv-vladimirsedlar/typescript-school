@@ -1,13 +1,13 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { sanitizeString } from '../../common/util/string.util';
 import prisma from '../../config/prisma.db';
 import { isUserAdmin } from '../../middlewares/auth.strategy';
+import { sanitizeString } from '../../utils/string.util';
 
 import { CreateMovieInput, UpdateMovieInput } from './movie.schema';
 
 /***********************************************************************************************************************
- * GET MOVIE
+ MARK: - get movie
  **********************************************************************************************************************/
 export async function getMovie(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
   const { id: movieId } = req.params;
@@ -26,9 +26,7 @@ export async function getMovie(req: FastifyRequest<{ Params: { id: string } }>, 
     return reply.code(404).send({ message: 'Movie not found' });
   }
 
-  // TODO: fix type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = req.user;
+  const user = req.user;
   if (user?.id !== movie.owner.id) {
     return reply.code(401).send({ message: 'User is not authorized to view details of this movie' });
   }
@@ -36,7 +34,7 @@ export async function getMovie(req: FastifyRequest<{ Params: { id: string } }>, 
 }
 
 /***********************************************************************************************************************
- * GET MOVIES
+ MARK: - get movie list
  **********************************************************************************************************************/
 export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
   const users = await prisma.movie.findMany({
@@ -60,14 +58,12 @@ export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
 }
 
 /***********************************************************************************************************************
- * CREATE MOVIE
+ MARK: - create movie
  **********************************************************************************************************************/
 export async function createMovie(req: FastifyRequest<{ Body: CreateMovieInput }>, reply: FastifyReply) {
   const { description, duration, year } = req.body;
 
-  // TODO: fix type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = req.user;
+  const user = req.user;
   if (!user?.id) {
     return reply.code(404).send({ message: 'User not found' });
   }
@@ -105,7 +101,7 @@ export async function createMovie(req: FastifyRequest<{ Body: CreateMovieInput }
 }
 
 /***********************************************************************************************************************
- * UPDATE MOVIE
+ MARK: - update movie
  **********************************************************************************************************************/
 export async function updateMovie(
   req: FastifyRequest<{ Body: UpdateMovieInput; Params: { id: string } }>,
@@ -119,9 +115,7 @@ export async function updateMovie(
     return reply.code(404).send({ message: 'Movie not found' });
   }
 
-  // TODO: fix type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = req.user;
+  const user = req.user;
   if (user?.id !== movie.ownerId && !isUserAdmin(user)) {
     return reply.code(401).send({ message: 'User is not authorized to update this movie' });
   }
@@ -159,7 +153,7 @@ export async function updateMovie(
 }
 
 /***********************************************************************************************************************
- * DELETE MOVIE
+ MARK: - delete movie
  **********************************************************************************************************************/
 export async function deleteMovie(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
   const { id: movieId } = req.params;
@@ -170,9 +164,7 @@ export async function deleteMovie(req: FastifyRequest<{ Params: { id: string } }
     return reply.code(404).send({ message: 'Movie not found' });
   }
 
-  // TODO: fix type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = req.user;
+  const user = req.user;
   if (user?.id !== movie.ownerId && !isUserAdmin(user)) {
     return reply.code(401).send({ message: 'User is not authorized to delete this movie' });
   }

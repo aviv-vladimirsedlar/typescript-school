@@ -4,8 +4,7 @@ import path from 'path';
 
 import fastifyPassport from '@fastify/passport';
 import fastifySecureSession from '@fastify/secure-session';
-import { User } from '@prisma/client';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest, PassportUser } from 'fastify';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 
 import prisma from '../config/prisma.db';
@@ -59,8 +58,7 @@ export const registerAuthorizationStrategy = (app: FastifyInstance) => {
 };
 
 export const authorize = async (req: FastifyRequest, reply: FastifyReply, actions: string[]) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user: any = req.user;
+  const user = req.user;
   if (!user) {
     return reply.code(404).send({ message: 'User not found' });
   }
@@ -92,7 +90,10 @@ export const authorize = async (req: FastifyRequest, reply: FastifyReply, action
   }
 };
 
-export const isUserAdmin = async (user: User) => {
+export const isUserAdmin = async (user: PassportUser | undefined) => {
+  if (!user) {
+    return false;
+  }
   const userRoles = await prisma.userRole.findMany({
     where: { userId: user.id },
     include: { role: { include: { roleAllowed: true } } },

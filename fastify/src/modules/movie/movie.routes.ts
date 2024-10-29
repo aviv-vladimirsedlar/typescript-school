@@ -3,17 +3,26 @@ import { User } from '@prisma/client';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { authorize } from '../../middlewares/auth.strategy';
+import logger from '../../utils/logger.util';
 
 import { createMovie, deleteMovie, getMovie, getMovies, updateMovie } from './movie.controller';
 import { CreateMovieInput, schemaMovie, UpdateMovieInput } from './movie.schema';
 
 export const routesMovie = async (app: FastifyInstance) => {
+  logger.info('MOVIE - routes registered');
+
+  /********************************************************************************************************************
+   MARK: - get movie list
+  ********************************************************************************************************************/
   app.get(
     '/',
     { preHandler: fastifyPassport.authenticate('jwt', { session: false }), schema: { tags: ['Movie'] } },
     getMovies,
   );
 
+  /*********************************************************************************************************************
+  MARK: - get movie by ID
+   ********************************************************************************************************************/
   app.get(
     '/:id',
     {
@@ -23,6 +32,9 @@ export const routesMovie = async (app: FastifyInstance) => {
     getMovie,
   );
 
+  /*********************************************************************************************************************
+  MARK: - create movie
+   ********************************************************************************************************************/
   app.post(
     '/create',
     {
@@ -40,6 +52,9 @@ export const routesMovie = async (app: FastifyInstance) => {
     createMovie,
   );
 
+  /*********************************************************************************************************************
+  MARK: - update movie
+   ********************************************************************************************************************/
   app.put(
     '/:id',
     {
@@ -57,6 +72,9 @@ export const routesMovie = async (app: FastifyInstance) => {
     updateMovie,
   );
 
+  /*********************************************************************************************************************
+  MARK: - delete movie
+   ********************************************************************************************************************/
   app.delete(
     '/:id',
     {
@@ -69,6 +87,4 @@ export const routesMovie = async (app: FastifyInstance) => {
     },
     deleteMovie,
   );
-
-  app.log.info('movie routes registered');
 };
