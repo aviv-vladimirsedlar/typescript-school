@@ -149,6 +149,10 @@ npm run lint
 npm run format
 ```
 
+### Postman
+
+- You can find the collection for postman in the ./postman folder
+
 ## TODO:
 
 - add winston logger

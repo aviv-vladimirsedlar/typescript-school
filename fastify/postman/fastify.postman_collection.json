@@ -1,0 +1,315 @@
+{
+	"info": {
+		"_postman_id": "bb932280-ac99-4a41-b84e-343e1d37c4f6",
+		"name": "Fastify",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39239456"
+	},
+	"item": [
+		{
+			"name": "Movie",
+			"item": [
+				{
+					"name": "Create movie",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Jurassic Park\",\n    \"description\": \"What an awesome movie\",\n    \"year\": 1990,\n    \"duration\": 134\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/movies/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Jurassic Park\",\n    \"description\": \"What an awesome movie\",\n    \"year\": 1990,\n    \"duration\": 134\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/movies",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Jurassic Park\",\n    \"description\": \"What an awesome movie\",\n    \"year\": 1990,\n    \"duration\": 134\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/movies/cm2szqqnu00004ie7sevdb7rs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"cm2szqqnu00004ie7sevdb7rs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Movie",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"What an awesome movie!!!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/movies/cm2szqqnu00004ie7sevdb7rs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"movies",
+								"cm2szqqnu00004ie7sevdb7rs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Movie",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Jurassic Park\",\n    \"description\": \"What an awesome movie\",\n    \"year\": 1990,\n    \"duration\": 134\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:19200/api/movies/cm2oy12a3000023mni3bs3reo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19200",
+							"path": [
+								"api",
+								"movies",
+								"cm2oy12a3000023mni3bs3reo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Users List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbTJvbjJ6dmswMDAwZnFtaTB5ZGEwdHJsIiwiZW1haWwiOiJpdmFuLnZ1a3VzaWMtZXh0QGF2aXYtZ3JvdXAuY29tIiwiZmlyc3ROYW1lIjoiSXZhbiIsImxhc3ROYW1lIjoiVnVrdXNpYyIsImlhdCI6MTcyOTg2NzI2NywiZXhwIjoxNzI5ODcwODY3fQ.t0niQofe_baJlq7BrsAc02crscfR13kXok5qzDe3nFY",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ivan.vukusic-ext@aviv-group.com\",\n    \"password\": \"Test@#12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Assign role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbTJvbjJ6dmswMDAwZnFtaTB5ZGEwdHJsIiwiZW1haWwiOiJpdmFuLnZ1a3VzaWMtZXh0QGF2aXYtZ3JvdXAuY29tIiwiZmlyc3ROYW1lIjoiSXZhbiIsImxhc3ROYW1lIjoiVnVrdXNpYyIsImlhdCI6MTcyOTg2NzI2NywiZXhwIjoxNzI5ODcwODY3fQ.t0niQofe_baJlq7BrsAc02crscfR13kXok5qzDe3nFY",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleId\": [\n        \"cm2syjzep0001z3q5q7zner19\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/cm2syohzi0000uumfrre7vhwa/assign-role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"cm2syohzi0000uumfrre7vhwa",
+								"assign-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@aviv-group.com\",\n    \"password\": \"Test@#12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ivan.vukusic -ext+111 @aviv-group.com \",\n    \"password\": \"Test@#12345\",\n    \"firstName\": \"Ivan\",\n    \"lastName\": \"Vukusic\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
