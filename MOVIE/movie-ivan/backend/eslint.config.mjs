@@ -23,7 +23,23 @@ export default [
       'import/order': [
         'error',
         {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          groups: [
+            ['builtin', 'external'], // Include other external libraries
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'object', // JSON imports or special cases
+            'type', // Separate type imports (if using TypeScript)
+          ],
+          pathGroups: [
+            {
+              pattern: 'react',
+              group: 'builtin',
+              position: 'before', // Ensure 'react' imports are on top
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },

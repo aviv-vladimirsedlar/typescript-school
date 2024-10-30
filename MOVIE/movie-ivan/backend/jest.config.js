@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.test' });
 
-// eslint-disable-next-line no-undef
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
