@@ -34,8 +34,17 @@ export async function getMovie(req: FastifyRequest<{ Params: { id: string } }>, 
 /***********************************************************************************************************************
  MARK: - get movie list
  **********************************************************************************************************************/
-export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
+export async function getMovies(
+  req: FastifyRequest<{ Querystring: { page?: string; limit?: string } }>,
+  reply: FastifyReply,
+) {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
   const movies = await prisma.movie.findMany({
+    skip: offset,
+    take: limit,
     select: {
       id: true,
       description: true,
@@ -52,7 +61,13 @@ export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
       },
     },
   });
-  return reply.code(200).send(movies);
+  const totalMovies = await prisma.movie.count(); // Total count for pagination metadata
+  const totalPages = Math.ceil(totalMovies / limit);
+
+  return reply.code(200).send({
+    data: movies,
+    meta: { page, limit, totalPages, totalMovies },
+  });
 }
 
 /***********************************************************************************************************************

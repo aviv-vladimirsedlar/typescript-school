@@ -42,13 +42,23 @@ describe('Movie Routes', () => {
 
   describe('GET /', () => {
     it('should fetch the list of movies', async () => {
+      const page = 1;
+      const limit = 2;
+      const totalMovies = 5;
+      const totalPages = Math.ceil(totalMovies / limit);
+
       getMovies.mockImplementationOnce(async (req, reply) => {
-        reply.code(200).send([mockedMovie]);
+        reply.code(200).send({
+          data: [mockedMovie, { ...mockedMovie, title: 'Test Movie 2', id: 'movie-id-2' }],
+          meta: { page, limit, totalPages, totalMovies },
+        });
       });
+
       const response = await supertest(app.server).get('/api/movies').set('Cookie', 'authCookie');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual([mockedMovie]);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('meta');
       expect(fastifyPassport.authenticate).toHaveBeenCalled();
     });
   });

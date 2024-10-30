@@ -45,15 +45,42 @@ describe('Movie Controller', () => {
   });
 
   describe('getMovies', () => {
-    it('should return a list of movies', async () => {
-      jest.spyOn(prisma.movie, 'findMany').mockResolvedValueOnce([mockedMovie]);
+    it('should return paginated movies with metadata', async () => {
+      const page = 1;
+      const limit = 2;
+      const totalMovies = 5;
+      const totalPages = Math.ceil(totalMovies / limit);
 
-      const req = {} as FastifyRequest;
+      // Mock prisma calls
+      jest
+        .spyOn(prisma.movie, 'findMany')
+        .mockResolvedValueOnce([mockedMovie, { ...mockedMovie, title: 'Test Movie 2', id: 'movie-id-2' }]);
+      jest.spyOn(prisma.movie, 'count').mockResolvedValueOnce(totalMovies);
+
+      const req = {
+        query: { page: String(page), limit: String(limit) },
+      } as unknown as FastifyRequest<{ Querystring: { page?: string; limit?: string } }>;
       const reply = { code: jest.fn().mockReturnThis(), send: jest.fn() } as unknown as FastifyReply;
 
       await getMovies(req, reply);
+
       expect(reply.code).toHaveBeenCalledWith(200);
-      expect(reply.send).toHaveBeenCalledWith([mockedMovie]);
+      expect(reply.send).toHaveBeenCalledWith({
+        data: [mockedMovie, { ...mockedMovie, title: 'Test Movie 2', id: 'movie-id-2' }],
+        meta: {
+          page,
+          limit,
+          totalPages,
+          totalMovies,
+        },
+      });
+
+      // Verify Prisma was called with pagination
+      expect(prisma.movie.findMany).toHaveBeenCalledWith({
+        skip: (page - 1) * limit,
+        take: limit,
+        select: expect.any(Object),
+      });
     });
   });
 
