@@ -11,6 +11,8 @@ This project is a starter template for building a Fastify API with authenticatio
 - **Middleware**: Custom middleware for authorization, verifying that users have permissions based on their role.
 - **Prisma ORM**: Manages database models and relationships between `User`, `Role`, `RoleAllowed`, `UserRole`, and `Movie`.
 - **Swagger UI - Docs**: After starting the server, access the Swagger UI at /docs.
+- **Jest**: Primary testing framework used for running unit and integration tests. Jest is set up with coverage tracking, and coverage thresholds are enforced to maintain code quality.
+- **Supertest**: Used for making HTTP requests to Fastify routes and validating responses, which is useful for integration tests.
 - **User Management**: Endpoints for user creation and login.
 - **User Authentication and Authorization**: JWT-based authentication with role-based authorization powered by `passport`.
   - **Roles and Permissions**: Roles (`admin`, `author`, `user`) control access to different actions:
@@ -110,19 +112,19 @@ cp .env.example .env
 - Deploying already created migrations
 
 ```bash
-yarn migrate_deploy
+yarn migrate:deploy
 ```
 
 - Seeding initial data
 
 ```bash
-yarn migrate_deploy
+yarn migrate:deploy
 ```
 
 - Initialize migrations - sync changes in schema
 
 ```bash
-yarn migrate_dev
+yarn migrate:dev
 ```
 
 If having issues with running migration, comment out `kubectl port-forward svc/fastify-postgres 5432:5432 --address=0.0.0.0 &` in `start-postgres.sh`, start postgres service and forward port to 5432 in RancherDesktop
@@ -130,7 +132,7 @@ If having issues with running migration, comment out `kubectl port-forward svc/f
 - Generate Prisma client
 
 ```bash
-yarn prisma_generate
+yarn prisma:generate
 ```
 
 ## Usage
@@ -144,20 +146,25 @@ yarn prisma_generate
 #### OR
 
 ```bash
-yarn start_dev
+yarn start:dev
+```
+
+### Testing
+
+```bash
+yarn test
+yarn test:watch
+yarn test:coverage
 ```
 
 ### Running ESLint and Prettier
 
 ```bash
-npm run lint
-npm run format
+yarn lint
+yarn lint:fix
+yarn format
 ```
 
 ### Postman
 
 - You can find the collection for postman in the ./postman folder
-
-## TODO:
-
-- add testing tools

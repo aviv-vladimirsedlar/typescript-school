@@ -15,4 +15,4 @@ const mockPrismaClient = {
 
 const PrismaClient = jest.fn(() => mockPrismaClient);
 
-module.exports = { PrismaClient };
+export default PrismaClient;

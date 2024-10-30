@@ -77,7 +77,7 @@ export const routesUser = async (app: FastifyInstance) => {
         async (
           req: FastifyRequest<{ Body: UserAssignRolesInput; user: User; Params: { id: string } }>,
           reply: FastifyReply,
-        ) => await authorize(req, reply, ['assign_roles']),
+        ) => authorize(req, reply, ['assign_roles']),
       ],
       schema: {
         tags: ['User'],

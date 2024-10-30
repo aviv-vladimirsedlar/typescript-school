@@ -6,7 +6,7 @@ import zodToJsonSchema from 'zod-to-json-schema';
  **********************************************************************************************************************/
 const createMovieSchema = z.object({
   title: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   year: z.number(),
   duration: z.number(),
 });
@@ -70,6 +70,7 @@ const getMovieResponseSchema = z.object({
  **********************************************************************************************************************/
 const deleteMovieResponseSchema = z.object({
   success: z.boolean(),
+  message: z.string(),
 });
 
 export const schemaMovie = {

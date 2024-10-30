@@ -2,6 +2,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import prisma from '../../config/prisma.db';
 import { isUserAdmin } from '../../middlewares/auth.strategy';
+import { PassportUser } from '../../types/declarations';
+import logger from '../../utils/logger.util';
 import { sanitizeString } from '../../utils/string.util';
 
 import { CreateMovieInput, UpdateMovieInput } from './movie.schema';
@@ -26,10 +28,6 @@ export async function getMovie(req: FastifyRequest<{ Params: { id: string } }>, 
     return reply.code(404).send({ message: 'Movie not found' });
   }
 
-  const user = req.user;
-  if (user?.id !== movie.owner.id) {
-    return reply.code(401).send({ message: 'User is not authorized to view details of this movie' });
-  }
   return reply.code(200).send(movie);
 }
 
@@ -37,7 +35,7 @@ export async function getMovie(req: FastifyRequest<{ Params: { id: string } }>, 
  MARK: - get movie list
  **********************************************************************************************************************/
 export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
-  const users = await prisma.movie.findMany({
+  const movies = await prisma.movie.findMany({
     select: {
       id: true,
       description: true,
@@ -54,7 +52,7 @@ export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
       },
     },
   });
-  return reply.code(200).send(users);
+  return reply.code(200).send(movies);
 }
 
 /***********************************************************************************************************************
@@ -62,22 +60,17 @@ export async function getMovies(req: FastifyRequest, reply: FastifyReply) {
  **********************************************************************************************************************/
 export async function createMovie(req: FastifyRequest<{ Body: CreateMovieInput }>, reply: FastifyReply) {
   const { description, duration, year } = req.body;
+  const user = req.user as PassportUser;
 
-  const user = req.user;
-  if (!user?.id) {
-    return reply.code(404).send({ message: 'User not found' });
-  }
-
-  const title = sanitizeString(req.body.title);
-  const movie = await prisma.movie.findUnique({
-    where: { title },
-  });
-  if (movie) {
-    return reply.code(401).send({ message: 'Movie with this title already exists' });
-  }
   try {
-    const movie = await prisma.movie.create({
-      data: { description, duration, title, year, owner: { connect: { id: user.id } } },
+    const title = sanitizeString(req.body.title);
+    const movie = await prisma.movie.findUnique({ where: { title } });
+    if (movie) {
+      return reply.code(409).send({ message: 'Movie with this title already exists' });
+    }
+
+    const createdMovie = await prisma.movie.create({
+      data: { description: description || '', duration, title, year, owner: { connect: { id: user.id } } },
       select: {
         id: true,
         description: true,
@@ -94,8 +87,9 @@ export async function createMovie(req: FastifyRequest<{ Body: CreateMovieInput }
         },
       },
     });
-    return reply.code(201).send(movie);
+    return reply.code(201).send(createdMovie);
   } catch (e) {
+    logger.error('ERROR "createMovie": ', e);
     return reply.code(500).send(e);
   }
 }
@@ -108,33 +102,34 @@ export async function updateMovie(
   reply: FastifyReply,
 ) {
   const { id: movieId } = req.params;
-  const movie = await prisma.movie.findUnique({
-    where: { id: movieId },
-  });
-  if (!movie) {
-    return reply.code(404).send({ message: 'Movie not found' });
-  }
-
-  const user = req.user;
-  if (user?.id !== movie.ownerId && !isUserAdmin(user)) {
-    return reply.code(401).send({ message: 'User is not authorized to update this movie' });
-  }
-
-  const { description, duration, year } = req.body;
-  const dataToUpdate: Partial<UpdateMovieInput> = {};
-
-  if (description !== undefined) {
-    dataToUpdate.description = description;
-  }
-  if (duration !== undefined) {
-    dataToUpdate.duration = duration;
-  }
-  if (year !== undefined) {
-    dataToUpdate.year = year;
-  }
-
   try {
-    const movie = await prisma.movie.update({
+    const movie = await prisma.movie.findUnique({ where: { id: movieId } });
+    if (!movie) {
+      return reply.code(404).send({ message: 'Movie not found' });
+    }
+
+    const user = req.user as PassportUser;
+    if (user?.id !== movie.ownerId) {
+      const isAdmin = await isUserAdmin(user);
+      if (!isAdmin) {
+        return reply.code(401).send({ message: 'User is not authorized to update this movie' });
+      }
+    }
+
+    const { description, duration, year } = req.body;
+    const dataToUpdate: Partial<UpdateMovieInput> = {};
+
+    if (description !== undefined) {
+      dataToUpdate.description = description;
+    }
+    if (duration !== undefined) {
+      dataToUpdate.duration = duration;
+    }
+    if (year !== undefined) {
+      dataToUpdate.year = year;
+    }
+
+    const updatedMovie = await prisma.movie.update({
       data: dataToUpdate,
       where: { id: movieId },
       select: {
@@ -146,7 +141,7 @@ export async function updateMovie(
         owner: { select: { id: true, email: true, firstName: true, lastName: true } },
       },
     });
-    return reply.code(201).send(movie);
+    return reply.code(201).send(updatedMovie);
   } catch (e) {
     return reply.code(500).send(e);
   }
@@ -157,21 +152,25 @@ export async function updateMovie(
  **********************************************************************************************************************/
 export async function deleteMovie(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
   const { id: movieId } = req.params;
-  const movie = await prisma.movie.findUnique({
-    where: { id: movieId },
-  });
-  if (!movie) {
-    return reply.code(404).send({ message: 'Movie not found' });
-  }
-
-  const user = req.user;
-  if (user?.id !== movie.ownerId && !isUserAdmin(user)) {
-    return reply.code(401).send({ message: 'User is not authorized to delete this movie' });
-  }
 
   try {
+    const movie = await prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+    if (!movie) {
+      return reply.code(404).send({ message: 'Movie not found' });
+    }
+
+    const user = req.user as PassportUser;
+    if (user?.id !== movie.ownerId) {
+      const isAdmin = await isUserAdmin(user);
+      if (!isAdmin) {
+        return reply.code(401).send({ message: 'User is not authorized to delete this movie' });
+      }
+    }
+
     await prisma.movie.delete({ where: { id: movieId } });
-    return reply.code(201).send({ success: true });
+    return reply.code(404).send({ success: true, message: 'Movie deleted successfully' });
   } catch (e) {
     return reply.code(500).send(e);
   }

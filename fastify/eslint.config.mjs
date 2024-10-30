@@ -1,14 +1,22 @@
 import pluginJs from '@eslint/js';
 import eslintPluginImport from 'eslint-plugin-import';
-import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginJest from 'eslint-plugin-jest';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default [
   {
+    ignores: ['coverage/'], // Ignore the coverage folder
+  },
+  {
     files: ['**/*.{js,mjs,cjs,ts}'],
-    languageOptions: { globals: globals.browser },
-    plugins: { import: eslintPluginImport, jest: eslintPluginImport },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.jest,
+      },
+    },
+    plugins: { import: eslintPluginImport, jest: eslintPluginJest },
     rules: {
       ...eslintPluginJest.configs.recommended.rules,
       semi: 'error',

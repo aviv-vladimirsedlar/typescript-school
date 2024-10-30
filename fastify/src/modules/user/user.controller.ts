@@ -2,14 +2,14 @@ import bcrypt from 'bcrypt';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';
 
+import { getAuthorizationStrategy } from '../../config/constants';
 import prisma from '../../config/prisma.db';
+import logger from '../../utils/logger.util';
 
 import { LoginUserInput, RegisterUserInput, UserAssignRolesInput } from './user.schema';
-import logger from '../../utils/logger.util';
 
 export const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'a-very-strong-secret';
-const authorizationStrategy = process.env.AUTHORIZATION_STRATEGY || 'cookie';
 
 const extractAndSanitizeRoles = (roles: { id: string; role: { name: string } }[]) => {
   return [...roles]
@@ -34,9 +34,7 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
     where: { email },
   });
   if (user) {
-    return reply.code(401).send({
-      message: 'User already exists with this email',
-    });
+    return reply.code(401).send({ message: 'User already exists with this email' });
   }
   try {
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
@@ -91,9 +89,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
     include: { roles: { include: { role: true } } },
   });
   if (!user) {
-    return reply.code(404).send({
-      message: 'User not found',
-    });
+    return reply.code(404).send({ message: 'User not found' });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
@@ -113,6 +109,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
   };
 
   // USING COOKIE
+  const authorizationStrategy = getAuthorizationStrategy();
   if (authorizationStrategy === 'cookie') {
     const payload = { sub: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName };
     const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
@@ -142,7 +139,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
  **********************************************************************************************************************/
 export async function logout(req: FastifyRequest, reply: FastifyReply) {
   reply.clearCookie('access_token');
-  return reply.send({ message: 'Logout successful' });
+  return reply.code(404).send({ message: 'Logout successful' });
 }
 
 /***********************************************************************************************************************
@@ -171,7 +168,6 @@ export async function userAssingRoles(
   }
 
   const roles = await prisma.role.findMany({ where: { id: { in: rolesFiltered } } });
-
   try {
     await prisma.userRole.createMany({
       data: roles.map((role) => ({ userId, roleId: role.id })),

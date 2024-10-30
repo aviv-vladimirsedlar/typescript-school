@@ -4,15 +4,17 @@ import path from 'path';
 
 import fastifyPassport from '@fastify/passport';
 import fastifySecureSession from '@fastify/secure-session';
-import { FastifyInstance, FastifyReply, FastifyRequest, PassportUser } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 
+import { getAuthorizationStrategy } from '../config/constants';
 import prisma from '../config/prisma.db';
+import { PassportUser } from '../types/declarations';
 
-const authorizationStrategy = process.env.AUTHORIZATION_STRATEGY || 'cookie';
+const authorizationStrategy = getAuthorizationStrategy();
 
 export const registerAuthorizationStrategy = (app: FastifyInstance) => {
-  if (authorizationStrategy === 'cooki') {
+  if (authorizationStrategy === 'cookie') {
     app.register(fastifySecureSession, {
       key: fs.readFileSync(path.join(__dirname, '../../secretKeyPassport')),
       cookie: {
@@ -41,7 +43,6 @@ export const registerAuthorizationStrategy = (app: FastifyInstance) => {
         secretOrKey: process.env.JWT_SECRET || 'a-very-strong-secret',
       },
       async (payload, done) => {
-        // Here, replace with actual user lookup logic
         const user = {
           id: payload.sub,
           email: payload.email,
@@ -58,8 +59,9 @@ export const registerAuthorizationStrategy = (app: FastifyInstance) => {
 };
 
 export const authorize = async (req: FastifyRequest, reply: FastifyReply, actions: string[]) => {
-  const user = req.user;
-  if (!user) {
+  const user = req.user as PassportUser;
+
+  if (!user?.id) {
     return reply.code(404).send({ message: 'User not found' });
   }
 
@@ -98,5 +100,6 @@ export const isUserAdmin = async (user: PassportUser | undefined) => {
     where: { userId: user.id },
     include: { role: { include: { roleAllowed: true } } },
   });
-  return userRoles.some((userRole) => userRole.role.name === 'admin');
+  const check = userRoles.some((userRole) => userRole.role.name === 'admin');
+  return check;
 };
