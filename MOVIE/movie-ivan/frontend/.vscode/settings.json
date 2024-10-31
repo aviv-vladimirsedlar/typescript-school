@@ -13,5 +13,11 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "git.openRepositoryInParentFolders": "always"
+  "git.openRepositoryInParentFolders": "always",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#ffe91f",
+    "titleBar.inactiveBackground": "#ffe91f",
+    "titleBar.inactiveForeground": "#000000",
+    "titleBar.activeForeground": "#000000"
+  }
 }

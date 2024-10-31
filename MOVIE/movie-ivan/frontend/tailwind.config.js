@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
 
 /** @type {import('tailwindcss').Config} */
 

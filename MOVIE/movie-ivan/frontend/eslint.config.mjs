@@ -13,7 +13,7 @@ const cleanGlobals = (globalSet) =>
 
 // Filter out "flowtype" rules from reactAppConfig
 const reactAppRules = Object.fromEntries(
-  Object.entries(reactAppConfig.rules).filter(([key]) => !key.startsWith('flowtype/'))
+  Object.entries(reactAppConfig.rules).filter(([key]) => !key.startsWith('flowtype/')),
 );
 
 const config = [

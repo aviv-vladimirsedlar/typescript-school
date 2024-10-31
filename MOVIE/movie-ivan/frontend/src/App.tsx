@@ -1,28 +1,34 @@
-// src/App.tsx
 import React from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import store from './config/store';
-import Dashboard from './pages/Dashboard';
+import { useCurrentUser } from './common/hooks/useCurrentUser';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 import Home from './pages/Home';
-import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
-import Register from './pages/Register';
 
-const App: React.FC = () => (
-  <Provider store={store}>
+const App: React.FC = () => {
+  const { isLoading } = useCurrentUser();
+
+  if (isLoading) {
+    return <div className="align-center flex h-screen w-screen justify-center">Loading...</div>;
+  }
+  return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<ProtectedRoute type="protected" />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+
+        <Route element={<ProtectedRoute type="auth" />}>
+          <Route path="/auth/login" element={<Login />} />
+        </Route>
+        <Route path="/auth/register" element={<ProtectedRoute type="auth" />}>
+          <Route path="/auth/register" element={<Register />} />
         </Route>
       </Routes>
     </Router>
-  </Provider>
-);
+  );
+};
 
 export default App;

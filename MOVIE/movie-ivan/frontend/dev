@@ -38,4 +38,4 @@ if [ "${ACTIVE_VERSION%%$NODE_VERSION*}" ] || [ ! -e "$GLOBAL_NPM" ]; then
   exit 1
 fi
 
-pnpm start
+yarn start

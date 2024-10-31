@@ -3,10 +3,13 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import { useAuth } from '../common/hooks/useAuth';
 
-const ProtectedRoute: React.FC = () => {
-  const isAuthenticated = useAuth();
+const ProtectedRoute: React.FC<{ type: 'auth' | 'protected' }> = ({ type }) => {
+  const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  if (type === 'auth') {
+    return !isAuthenticated ? <Outlet /> : <Navigate to="/" />;
+  }
+  return isAuthenticated ? <Outlet /> : <Navigate to="/auth/login" />;
 };
 
 export default ProtectedRoute;

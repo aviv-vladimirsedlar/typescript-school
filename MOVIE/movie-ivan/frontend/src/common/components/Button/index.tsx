@@ -1,12 +1,10 @@
+import clsx from 'clsx';
 import React from 'react';
 
-interface ButtonProps {
-  onClick: () => void;
-  label: string;
-}
+import { ButtonProps } from './types';
 
-const Button: React.FC<ButtonProps> = ({ onClick, label }) => (
-  <button onClick={onClick} className="px-4 py-2 bg-blue-500 text-white rounded">
+const Button: React.FC<ButtonProps> = ({ className, label, onClick, type = 'button' }) => (
+  <button className={clsx('rounded-lg bg-blue-500 p-4 text-white', className)} onClick={onClick} type={type}>
     {label}
   </button>
 );
