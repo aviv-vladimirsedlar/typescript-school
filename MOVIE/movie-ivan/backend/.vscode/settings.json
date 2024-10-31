@@ -15,5 +15,10 @@
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "git.openRepositoryInParentFolders": "always",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#f51717",
+    "titleBar.inactiveBackground": "#f51717"
   }
 }

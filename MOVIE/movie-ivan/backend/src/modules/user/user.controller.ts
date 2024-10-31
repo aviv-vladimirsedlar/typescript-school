@@ -4,26 +4,14 @@ import jwt from 'jsonwebtoken';
 
 import { getAuthorizationStrategy } from '../../config/constants';
 import prisma from '../../config/prisma.db';
+import { UserRole } from '../../types/user.types';
 import logger from '../../utils/logger.util';
+import { extractAndSanitizeRoles } from '../../utils/string.util';
 
 import { LoginUserInput, RegisterUserInput, UserAssignRolesInput } from './user.schema';
 
 export const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'a-very-strong-secret';
-
-const extractAndSanitizeRoles = (roles: { id: string; role: { name: string } }[]) => {
-  return [...roles]
-    .sort((a, b) => {
-      if (a.role.name < b.role.name) {
-        return -1;
-      }
-      if (a.role.name > b.role.name) {
-        return 1;
-      }
-      return 0;
-    })
-    .map((role) => ({ id: role.id, role: { name: role.role.name } }));
-};
 
 /***********************************************************************************************************************
  MARK: - register user
@@ -71,6 +59,13 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
 /***********************************************************************************************************************
  MARK: - get users
  **********************************************************************************************************************/
+export async function useGetCurrentUser(req: FastifyRequest, reply: FastifyReply) {
+  return reply.code(200).send(req.user);
+}
+
+/***********************************************************************************************************************
+ MARK: - get users
+ **********************************************************************************************************************/
 export async function userGetList(req: FastifyRequest, reply: FastifyReply) {
   const users = await prisma.user.findMany({
     select: { id: true, email: true, firstName: true, lastName: true },
@@ -86,7 +81,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
 
   const user = await prisma.user.findUnique({
     where: { email },
-    include: { roles: { include: { role: true } } },
+    include: { roles: { include: { role: { include: { roleAllowed: true } } } } },
   });
   if (!user) {
     return reply.code(404).send({ message: 'User not found' });
@@ -105,7 +100,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    roles: extractAndSanitizeRoles(user.roles),
+    roles: extractAndSanitizeRoles(user.roles as unknown as UserRole[]),
   };
 
   // USING COOKIE
@@ -127,7 +122,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      roles: extractAndSanitizeRoles(user.roles),
+      roles: extractAndSanitizeRoles(user.roles as unknown as UserRole[]),
     };
     const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
     reply.send({ accessToken, user: userResponse });
@@ -139,7 +134,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
  **********************************************************************************************************************/
 export async function logout(req: FastifyRequest, reply: FastifyReply) {
   reply.clearCookie('access_token');
-  return reply.code(404).send({ message: 'Logout successful' });
+  return reply.code(201).send({ message: 'Logout successful' });
 }
 
 /***********************************************************************************************************************
@@ -154,7 +149,7 @@ export async function userAssingRoles(
 
   let user = await prisma.user.findUnique({
     where: { id: userId },
-    include: { roles: { include: { role: true } } },
+    include: { roles: { include: { role: { include: { roleAllowed: true } } } } },
   });
   if (!user) {
     return reply.code(404).send({ message: 'User not found' });
@@ -175,7 +170,7 @@ export async function userAssingRoles(
 
     user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { roles: { include: { role: true } } },
+      include: { roles: { include: { role: { include: { roleAllowed: true } } } } },
     });
     if (!user) {
       return reply.code(404).send({ message: 'User not found' });
@@ -185,7 +180,7 @@ export async function userAssingRoles(
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      roles: extractAndSanitizeRoles(user.roles),
+      roles: extractAndSanitizeRoles(user.roles as unknown as UserRole[]),
     };
     return reply.code(201).send(userResponse);
   } catch (e) {

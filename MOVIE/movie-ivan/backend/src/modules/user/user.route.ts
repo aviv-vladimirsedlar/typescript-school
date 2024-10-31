@@ -6,11 +6,20 @@ import { authorize } from '../../middlewares/auth.strategy';
 import logger from '../../utils/logger.util';
 import { sanitizeEmail } from '../../utils/string.util';
 
-import { userGetList, login, logout, register, userAssingRoles } from './user.controller';
+import { userGetList, login, logout, register, userAssingRoles, useGetCurrentUser } from './user.controller';
 import { LoginUserInput, RegisterUserInput, schemaUser, UserAssignRolesInput } from './user.schema';
 
 export const routesUser = async (app: FastifyInstance) => {
   logger.info('USER  - routes registered');
+
+  /*********************************************************************************************************************
+  MARK: - get user list
+   ********************************************************************************************************************/
+  app.get(
+    '/me',
+    { preHandler: fastifyPassport.authenticate('jwt', { session: false }), schema: { tags: ['User'] } },
+    useGetCurrentUser,
+  );
 
   /*********************************************************************************************************************
   MARK: - get user list

@@ -5,6 +5,7 @@ type PassportUser = {
   email: string;
   firstName: string;
   lastName: string;
+  roles: UserRole[];
 };
 
 declare module '@fastify/jwt' {

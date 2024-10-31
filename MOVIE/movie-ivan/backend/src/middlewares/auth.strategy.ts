@@ -1,15 +1,17 @@
 import 'reflect-metadata';
-import * as fs from 'fs';
-import path from 'path';
 
 import fastifyPassport from '@fastify/passport';
 import fastifySecureSession from '@fastify/secure-session';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import * as fs from 'fs';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
+import path from 'path';
 
 import { getAuthorizationStrategy } from '../config/constants';
 import prisma from '../config/prisma.db';
 import { PassportUser } from '../types/declarations';
+import { UserRole } from '../types/user.types';
+import { extractAndSanitizeRoles } from '../utils/string.util';
 
 const authorizationStrategy = getAuthorizationStrategy();
 
@@ -43,16 +45,23 @@ export const registerAuthorizationStrategy = (app: FastifyInstance) => {
         secretOrKey: process.env.JWT_SECRET || 'a-very-strong-secret',
       },
       async (payload, done) => {
-        const user = {
-          id: payload.sub,
-          email: payload.email,
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-        };
+        const user = await prisma.user.findUnique({
+          where: { id: payload.sub },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            roles: {
+              select: { id: true, role: { select: { name: true, roleAllowed: { select: { action: true } } } } },
+            },
+          },
+        });
         if (!user) {
           return done(null, false);
         }
-        return done(null, user);
+        const roles = extractAndSanitizeRoles(user.roles as unknown as UserRole[]);
+        return done(null, { ...user, roles });
       },
     ),
   );

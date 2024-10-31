@@ -24,7 +24,13 @@ const mockRoleAdmin = {
   updatedAt,
   roleAllowed: [{ action: 'assign_roles' }],
 };
-const mockRoleUser = { id: 'user-role-id', name: 'user', createdAt, updatedAt };
+const mockRoleUser = {
+  id: 'user-role-id',
+  name: 'user',
+  roleAllowed: [{ action: 'view_movie' }],
+  createdAt,
+  updatedAt,
+};
 const mockUserRoleRoleUser = {
   id: 'user-role-id',
   userId,
@@ -133,22 +139,6 @@ describe('User Controller', () => {
       expect(response.status).toBe(200);
     });
 
-    it('should login and return a cookie', async () => {
-      jest.spyOn(authorizationModule, 'getAuthorizationStrategy').mockReturnValue('cookie');
-
-      const hash = await bcrypt.hash(password, SALT_ROUNDS);
-      jest
-        .spyOn(prisma.user, 'findUnique')
-        .mockResolvedValueOnce({ ...mockUserWithUserRole, password: hash, roles: [mockUserRoleRoleUser] } as any);
-
-      const response = await request(app.server)
-        .post('/api/users/login')
-        .send({ email: 'testuser@example.com', password });
-
-      expect(response.status).toBe(200);
-      authCookie = response.headers['set-cookie'][0];
-    });
-
     it('should fail on login - user not found', async () => {
       const body = { email: 'testuser@example.com', password: password };
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(null);
@@ -172,15 +162,34 @@ describe('User Controller', () => {
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty('message', 'Invalid email or password');
     });
+
+    it('should login and return a cookie', async () => {
+      jest.spyOn(authorizationModule, 'getAuthorizationStrategy').mockReturnValue('cookie');
+
+      const hash = await bcrypt.hash(password, SALT_ROUNDS);
+      jest
+        .spyOn(prisma.user, 'findUnique')
+        .mockResolvedValueOnce({ ...mockUserWithUserRole, password: hash, roles: [mockUserRoleRoleUser] } as any);
+
+      const response = await request(app.server)
+        .post('/api/users/login')
+        .send({ email: 'testuser@example.com', password });
+
+      expect(response.status).toBe(200);
+      authCookie = response.headers['set-cookie'][0];
+    });
   });
 
   describe('User list', () => {
     it('should fetch a list of users', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(mockUserWithUserRole);
+
       jest
         .spyOn(prisma.user, 'findMany')
         .mockResolvedValueOnce([
           { ...mockUserWithUserRole, roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] } as any,
         ]);
+
       const response = await request(app.server).get('/api/users').set('Cookie', authCookie);
 
       expect(response.status).toBe(200);
@@ -191,6 +200,13 @@ describe('User Controller', () => {
 
   describe('Assing role', () => {
     it('should assign a role to the user - adding only "author" role', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+        ...mockUserWithUserRole,
+        roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }],
+      } as any);
+      jest
+        .spyOn(prisma.userRole, 'findUnique')
+        .mockResolvedValueOnce([{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] as any);
       jest
         .spyOn(prisma.userRole, 'findMany')
         .mockResolvedValueOnce([{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] as any);
@@ -228,6 +244,10 @@ describe('User Controller', () => {
     });
 
     it('should assign a role to the user - adding two roles, "author" and "admin"', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+        ...mockUserWithUserRole,
+        roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }],
+      } as any);
       jest
         .spyOn(prisma.userRole, 'findMany')
         .mockResolvedValueOnce([{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] as any);
@@ -272,6 +292,10 @@ describe('User Controller', () => {
     });
 
     it('should not assign a role to the user - user already has role', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+        ...mockUserWithUserRole,
+        roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }],
+      } as any);
       jest
         .spyOn(prisma.userRole, 'findMany')
         .mockResolvedValueOnce([{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] as any);
@@ -299,6 +323,10 @@ describe('User Controller', () => {
     });
 
     it('should not assign a role to the user - user not found', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+        ...mockUserWithUserRole,
+        roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }],
+      } as any);
       jest
         .spyOn(prisma.userRole, 'findMany')
         .mockResolvedValueOnce([{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] as any);
@@ -315,6 +343,10 @@ describe('User Controller', () => {
     });
 
     it('should return 500 on assigning roles - database error', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+        ...mockUserWithUserRole,
+        roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }],
+      } as any);
       jest
         .spyOn(prisma.userRole, 'findMany')
         .mockResolvedValueOnce([{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] as any);
@@ -358,8 +390,12 @@ describe('User Controller', () => {
 
   describe('Logout', () => {
     it('should logout', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce({
+        ...mockUserWithUserRole,
+        roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }],
+      } as any);
       const response = await request(app.server).delete(`/api/users/logout`).set('Cookie', authCookie);
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('message', 'Logout successful');
     });
   });

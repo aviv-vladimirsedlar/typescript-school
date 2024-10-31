@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import cors from '@fastify/cors';
 import * as dotenv from 'dotenv';
 import Fastify from 'fastify';
 
@@ -18,6 +19,9 @@ const HOST = 'localhost';
 export function buildServer() {
   const app = Fastify();
   app.register(winstonLogger);
+
+  // CORS
+  app.register(cors, { origin: true, credentials: true });
 
   // Authorization strategy and other plugins
   registerAuthorizationStrategy(app);
