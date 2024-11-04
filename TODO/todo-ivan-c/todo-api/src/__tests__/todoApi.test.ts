@@ -1,11 +1,28 @@
 import request from "supertest";
 import app from "../app";
+import { Server } from "http";
+import { sequelize, serverReadyPromise } from "../server";
+import logger from "../config/logger";
+
+let server: Server;
+
+beforeAll(async () => {
+  server = await serverReadyPromise;
+});
+
+afterAll(async () => {
+  if (server) {
+    await server.close();
+  }
+  await sequelize.close();
+});
 
 let token: string;
 let userId: number;
 
 beforeEach(async () => {
   const email = `test${Date.now()}@example.com`;
+  logger.debug(`Created test user with email: ${email}`);
   const password = "password123";
 
   // Register a user and get a token

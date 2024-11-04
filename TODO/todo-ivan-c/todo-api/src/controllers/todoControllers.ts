@@ -113,36 +113,40 @@ export const deleteTodo = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export const getTodos = (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.userId;
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const offset = (page - 1) * limit;
-  const filter = req.query.filter ? (req.query.filter as string) : "";
-  const sort = req.query.sort ? (req.query.sort as string) : "ASC";
+export const getTodos = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.userId;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = (page - 1) * limit;
+    const filter = req.query.filter ? (req.query.filter as string) : "";
+    const sort = req.query.sort ? (req.query.sort as string) : "ASC";
 
-  const whereClause = filter
-    ? { userId, title: { [Op.like]: `%${filter}%` } }
-    : { userId };
+    const whereClause = filter
+      ? { userId, title: { [Op.like]: `%${filter}%` } }
+      : { userId };
 
-  Todo.findAndCountAll({
-    where: whereClause,
-    limit,
-    offset,
-    order: [["title", sort]],
-  })
-    .then((result) => {
-      res.status(200).json({
-        data: result.rows,
-        page,
-        limit,
-        total: result.count,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
+    const result = await Todo.findAndCountAll({
+      where: whereClause,
+      limit,
+      offset,
+      order: [["title", sort]],
     });
+
+    res.status(200).json({
+      data: result.rows,
+      page,
+      limit,
+      total: result.count,
+    });
+  } catch (error: any) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
