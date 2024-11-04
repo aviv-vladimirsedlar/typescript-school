@@ -1,9 +1,3 @@
-# Test Instructions
-
-To run the tests, use the following command:
-
-`npx jest`
-
 # Running the Application
 
 To start the application, use the following command:
@@ -27,3 +21,7 @@ To run the tests, use the following command:
 ```sh
 npx jest
 ```
+
+# Prerequisites
+
+Make sure you have MySQL installed and running on your machine
