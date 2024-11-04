@@ -47,6 +47,7 @@ const config = [
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginJsxA11y.configs.recommended.rules,
       semi: 'error',
+      'react/no-unescaped-entities': 'off',
       'import/order': [
         'error',
         {

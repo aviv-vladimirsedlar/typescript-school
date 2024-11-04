@@ -5,6 +5,7 @@ import { useCurrentUser } from './common/hooks/useCurrentUser';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Home from './pages/Home';
+import Movies from './pages/Movies';
 import ProtectedRoute from './pages/ProtectedRoute';
 
 const App: React.FC = () => {
@@ -18,6 +19,7 @@ const App: React.FC = () => {
       <Routes>
         <Route element={<ProtectedRoute type="protected" />}>
           <Route path="/" element={<Home />} />
+          <Route path="/movies" element={<Movies />} />
         </Route>
 
         <Route element={<ProtectedRoute type="auth" />}>

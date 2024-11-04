@@ -18,7 +18,6 @@ export const useLogout = () => {
     onSuccess: () => {
       dispatch(logoutSuccess());
       setTimeout(() => {
-        console.log('NAVIGATE ');
         navigate('/auth/login');
       }, 1000);
     },

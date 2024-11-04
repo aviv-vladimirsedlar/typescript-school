@@ -45,6 +45,7 @@ export async function getMovies(
   const movies = await prisma.movie.findMany({
     skip: offset,
     take: limit,
+    orderBy: { title: 'asc' },
     select: {
       id: true,
       description: true,
@@ -61,12 +62,12 @@ export async function getMovies(
       },
     },
   });
-  const totalMovies = await prisma.movie.count(); // Total count for pagination metadata
-  const totalPages = Math.ceil(totalMovies / limit);
+  const totalCount = await prisma.movie.count(); // Total count for pagination metadata
+  const totalPages = Math.ceil(totalCount / limit);
 
   return reply.code(200).send({
     data: movies,
-    meta: { page, limit, totalPages, totalMovies },
+    meta: { page, limit, totalPages, totalCount },
   });
 }
 
@@ -185,7 +186,7 @@ export async function deleteMovie(req: FastifyRequest<{ Params: { id: string } }
     }
 
     await prisma.movie.delete({ where: { id: movieId } });
-    return reply.code(404).send({ success: true, message: 'Movie deleted successfully' });
+    return reply.code(201).send({ success: true, message: 'Movie deleted successfully' });
   } catch (e) {
     return reply.code(500).send(e);
   }

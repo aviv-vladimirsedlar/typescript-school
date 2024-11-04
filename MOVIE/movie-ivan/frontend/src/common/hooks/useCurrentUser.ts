@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import axiosInstance from '../../config/api';
+import { RootState } from '../../config/rootReducer';
 import { loginSuccess } from '../../config/slices/auth.slice';
 
 const getCurrentUser = async () => {
@@ -11,13 +12,17 @@ const getCurrentUser = async () => {
 };
 
 export const useCurrentUser = () => {
-  const [currentUser, setCurrentUser] = useState(null);
   const dispatch = useDispatch();
+
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+
+  const isAdmin = useMemo(() => currentUser?.roles?.some((userRole) => userRole.role.name === 'admin'), [currentUser]);
 
   const { isLoading } = useQuery('currentUser', getCurrentUser, {
     retry: false,
+    enabled: isAuthenticated,
     onSuccess: (res) => {
-      setCurrentUser(res);
       dispatch(loginSuccess({ user: res }));
     },
     onError: (error) => {
@@ -25,5 +30,5 @@ export const useCurrentUser = () => {
     },
   });
 
-  return { currentUser, isLoading };
+  return { currentUser, isAdmin, isLoading };
 };

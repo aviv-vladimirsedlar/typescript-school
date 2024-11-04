@@ -44,13 +44,13 @@ describe('Movie Routes', () => {
     it('should fetch the list of movies', async () => {
       const page = 1;
       const limit = 2;
-      const totalMovies = 5;
-      const totalPages = Math.ceil(totalMovies / limit);
+      const totalCount = 5;
+      const totalPages = Math.ceil(totalCount / limit);
 
       getMovies.mockImplementationOnce(async (req, reply) => {
         reply.code(200).send({
           data: [mockedMovie, { ...mockedMovie, title: 'Test Movie 2', id: 'movie-id-2' }],
-          meta: { page, limit, totalPages, totalMovies },
+          meta: { page, limit, totalPages, totalCount },
         });
       });
 

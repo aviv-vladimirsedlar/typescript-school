@@ -48,14 +48,14 @@ describe('Movie Controller', () => {
     it('should return paginated movies with metadata', async () => {
       const page = 1;
       const limit = 2;
-      const totalMovies = 5;
-      const totalPages = Math.ceil(totalMovies / limit);
+      const totalCount = 5;
+      const totalPages = Math.ceil(totalCount / limit);
 
       // Mock prisma calls
       jest
         .spyOn(prisma.movie, 'findMany')
         .mockResolvedValueOnce([mockedMovie, { ...mockedMovie, title: 'Test Movie 2', id: 'movie-id-2' }]);
-      jest.spyOn(prisma.movie, 'count').mockResolvedValueOnce(totalMovies);
+      jest.spyOn(prisma.movie, 'count').mockResolvedValueOnce(totalCount);
 
       const req = {
         query: { page: String(page), limit: String(limit) },
@@ -71,7 +71,7 @@ describe('Movie Controller', () => {
           page,
           limit,
           totalPages,
-          totalMovies,
+          totalCount,
         },
       });
 
@@ -79,6 +79,7 @@ describe('Movie Controller', () => {
       expect(prisma.movie.findMany).toHaveBeenCalledWith({
         skip: (page - 1) * limit,
         take: limit,
+        orderBy: { title: 'asc' },
         select: expect.any(Object),
       });
     });
@@ -254,7 +255,7 @@ describe('Movie Controller', () => {
       const reply = { code: jest.fn().mockReturnThis(), send: jest.fn() } as unknown as FastifyReply;
 
       await deleteMovie(req, reply);
-      expect(reply.code).toHaveBeenCalledWith(404);
+      expect(reply.code).toHaveBeenCalledWith(201);
       expect(reply.send).toHaveBeenCalledWith({ success: true, message: 'Movie deleted successfully' });
     });
 
