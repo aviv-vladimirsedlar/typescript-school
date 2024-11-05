@@ -41,7 +41,6 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
       data: { userId: user.id, roleId: role.id },
       include: { role: true },
     });
-
     const userResponse = {
       id: user.id,
       email: user.email,
@@ -49,7 +48,31 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
       lastName: user.lastName,
       roles: [{ id: userRole.id, role: { name: userRole.role.name } }],
     };
-    return reply.code(201).send(userResponse);
+
+    // USING COOKIE
+    const authorizationStrategy = getAuthorizationStrategy();
+    if (authorizationStrategy === 'cookie') {
+      const payload = { sub: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName };
+      const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+      reply.setCookie('access_token', accessToken, {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Only set to true in production
+        maxAge: 3600 * 1000, // 1 hour
+      });
+      reply.code(201).send({ user: userResponse });
+    } else {
+      // USING JWT
+      const payload = {
+        sub: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roles: extractAndSanitizeRoles(user.roles as unknown as UserRole[]),
+      };
+      const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+      reply.code(201).send({ accessToken, user: userResponse });
+    }
   } catch (e) {
     logger.error('ERROR "register": ', e);
     return reply.code(500).send(e);
@@ -114,7 +137,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
       secure: process.env.NODE_ENV === 'production', // Only set to true in production
       maxAge: 3600 * 1000, // 1 hour
     });
-    reply.send({ user: userResponse });
+    reply.code(200).send({ user: userResponse });
   } else {
     // USING JWT
     const payload = {
@@ -125,7 +148,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
       roles: extractAndSanitizeRoles(user.roles as unknown as UserRole[]),
     };
     const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-    reply.send({ accessToken, user: userResponse });
+    reply.code(200).send({ accessToken, user: userResponse });
   }
 };
 

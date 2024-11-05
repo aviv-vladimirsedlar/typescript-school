@@ -12,16 +12,19 @@ const registerUserSchema = z.object({
 });
 export type RegisterUserInput = z.infer<typeof registerUserSchema>;
 const registerUserResponseSchema = z.object({
-  id: z.string(),
-  email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  roles: z.array(
-    z.object({
-      id: z.string(),
-      role: z.object({ name: z.string() }),
-    }),
-  ),
+  accessToken: z.string().optional(),
+  user: z.object({
+    id: z.string(),
+    email: z.string().email(),
+    firstName: z.string(),
+    lastName: z.string(),
+    roles: z.array(
+      z.object({
+        id: z.string(),
+        role: z.object({ name: z.string() }),
+      }),
+    ),
+  }),
 });
 
 /***********************************************************************************************************************
@@ -38,7 +41,7 @@ const loginSchema = z.object({
 });
 export type LoginUserInput = z.infer<typeof loginSchema>;
 const loginResponseSchema = z.object({
-  accessToken: z.string(),
+  accessToken: z.string().optional(),
   user: z.object({
     id: z.string(),
     email: z.string().email(),

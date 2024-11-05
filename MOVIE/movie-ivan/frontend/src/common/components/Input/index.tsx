@@ -6,6 +6,7 @@ import { InputProps } from './types';
 const Input: React.FC<InputProps> = ({
   className,
   classNameInput,
+  error,
   label,
   name,
   onChange,
@@ -19,10 +20,10 @@ const Input: React.FC<InputProps> = ({
     </label>
     <input
       id={name}
-      className={clsx(
-        'block w-full rounded-lg border border-gray-200 bg-gray-50/50 p-4 text-sm text-gray-900',
-        classNameInput,
-      )}
+      className={clsx('block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900', classNameInput, {
+        'border border-red-500': !!error,
+        'border border-gray-200': !error,
+      })}
       onChange={onChange}
       required={required}
       type={type}

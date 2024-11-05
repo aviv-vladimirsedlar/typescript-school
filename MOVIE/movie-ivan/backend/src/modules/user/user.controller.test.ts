@@ -76,7 +76,7 @@ describe('User Controller', () => {
       const response = await request(app.server).post('/api/users/register').send(body);
 
       expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('user');
     });
 
     it('should fail on register - user already exists', async () => {

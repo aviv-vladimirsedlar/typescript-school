@@ -1,28 +1,27 @@
 import { useMutation } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import axiosInstance from '../../config/api';
 import { loginSuccess } from '../../config/slices/auth.slice';
 
-interface LoginData {
+interface RegisterData {
   email: string;
+  firstName: string;
+  lastName: string;
   password: string;
 }
 
-const loginRequest = async (data: LoginData) => {
-  const response = await axiosInstance.post('/users/login', data);
+const registerRequest = async (data: RegisterData) => {
+  const response = await axiosInstance.post('/users/register', data);
   return response.data;
 };
 
-export const useLogin = () => {
-  const navigate = useNavigate();
+export const useRegister = () => {
   const dispatch = useDispatch();
 
-  return useMutation(loginRequest, {
+  return useMutation(registerRequest, {
     onSuccess: (data) => {
       dispatch(loginSuccess({ user: data.user }));
-      navigate('/');
     },
   });
 };

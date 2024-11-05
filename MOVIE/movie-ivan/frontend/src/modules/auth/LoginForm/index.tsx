@@ -1,6 +1,5 @@
 import { useFormik } from 'formik';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 
 import Button from '../../../common/components/Button';
@@ -23,15 +22,22 @@ const initialValues: FormFields = {
 };
 
 export const LoginForm: React.FC = () => {
-  const navigate = useNavigate();
   const { mutate: login, isLoading } = useLogin();
 
-  const handleSubmit = async (values: { email: string; password: string }) => {
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const handleSubmit = async () => {
+    const { values } = formik;
     await login(
       { email: values.email, password: values.password },
       {
-        onSuccess: () => {
-          navigate('/dashboard');
+        onError: (error: unknown) => {
+          const typedError = error as Error & { response: { data: { message: string } } };
+          if (typedError?.response?.data) {
+            setErrorMessage(typedError.response.data.message);
+          } else {
+            setErrorMessage('An unknown error occurred');
+          }
         },
       },
     );
@@ -60,6 +66,12 @@ export const LoginForm: React.FC = () => {
       />
 
       <Button className="w-full" label={isLoading ? '...' : 'Submit'} onClick={formik.handleSubmit} type="submit" />
+
+      {!!errorMessage && (
+        <div className="mt-4 rounded-lg border border-red-300 bg-red-100/50 p-4 py-2 text-sm text-red-700">
+          {errorMessage}
+        </div>
+      )}
     </form>
   );
 };

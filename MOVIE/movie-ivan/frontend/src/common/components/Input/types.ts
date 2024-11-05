@@ -1,6 +1,7 @@
 export interface InputProps {
   className?: string;
   classNameInput?: string;
+  error?: string;
   label: string;
   name: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
