@@ -18,6 +18,10 @@ export const useCurrentUser = () => {
   const currentUser = useSelector((state: RootState) => state.auth.user);
 
   const isAdmin = useMemo(() => currentUser?.roles?.some((userRole) => userRole.role.name === 'admin'), [currentUser]);
+  const isAuthor = useMemo(
+    () => currentUser?.roles?.some((userRole) => userRole.role.name === 'author'),
+    [currentUser],
+  );
 
   const { isLoading } = useQuery('currentUser', getCurrentUser, {
     retry: false,
@@ -30,5 +34,5 @@ export const useCurrentUser = () => {
     },
   });
 
-  return { currentUser, isAdmin, isLoading };
+  return { currentUser, isAdmin, isAuthor, isLoading };
 };

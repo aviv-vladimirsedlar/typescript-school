@@ -23,6 +23,15 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+        // Ignore paths in the state
+        ignoredPaths: ['register', 'rehydrate'],
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
