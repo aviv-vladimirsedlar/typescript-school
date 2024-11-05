@@ -80,7 +80,7 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
 }
 
 /***********************************************************************************************************************
- MARK: - get users
+ MARK: - get current user
  **********************************************************************************************************************/
 export async function useGetCurrentUser(req: FastifyRequest, reply: FastifyReply) {
   return reply.code(200).send(req.user);
@@ -89,11 +89,38 @@ export async function useGetCurrentUser(req: FastifyRequest, reply: FastifyReply
 /***********************************************************************************************************************
  MARK: - get users
  **********************************************************************************************************************/
-export async function userGetList(req: FastifyRequest, reply: FastifyReply) {
-  const users = await prisma.user.findMany({
-    select: { id: true, email: true, firstName: true, lastName: true },
+export async function userGetList(
+  req: FastifyRequest<{ Querystring: { page?: string; limit?: string } }>,
+  reply: FastifyReply,
+) {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  let data = await prisma.user.findMany({
+    skip: offset,
+    take: limit,
+    orderBy: { firstName: 'asc' },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      roles: { select: { role: { select: { name: true } } } },
+    },
   });
-  return reply.code(200).send(users);
+  data = data.map((user) => ({
+    ...user,
+    roles: extractAndSanitizeRoles(user.roles as unknown as UserRole[]),
+  }));
+
+  const totalCount = await prisma.user.count(); // Total count for pagination metadata
+  const totalPages = Math.ceil(totalCount / limit);
+
+  return reply.code(200).send({
+    data,
+    meta: { page, limit, totalPages, totalCount },
+  });
 }
 
 /***********************************************************************************************************************
@@ -167,7 +194,7 @@ export async function userAssingRoles(
   req: FastifyRequest<{ Body: UserAssignRolesInput; Params: { id: string } }>,
   reply: FastifyReply,
 ) {
-  const { roleIds } = req.body;
+  const { roles: rolesInput } = req.body;
   const { id: userId } = req.params;
 
   let user = await prisma.user.findUnique({
@@ -178,14 +205,14 @@ export async function userAssingRoles(
     return reply.code(404).send({ message: 'User not found' });
   }
 
-  const userRoleIds = user?.roles.map((role) => role.roleId);
-  const rolesFiltered = roleIds.filter((roleId) => !userRoleIds?.includes(roleId));
+  const userRoles = user?.roles.map((role) => role.role.name);
+  const rolesInputFiltered = rolesInput.filter((role: string) => !userRoles?.includes(role));
 
-  if (!rolesFiltered.length) {
+  if (!rolesInputFiltered.length) {
     return reply.code(401).send({ message: 'User already has all of the roles' });
   }
 
-  const roles = await prisma.role.findMany({ where: { id: { in: rolesFiltered } } });
+  const roles = await prisma.role.findMany({ where: { name: { in: rolesInputFiltered } } });
   try {
     await prisma.userRole.createMany({
       data: roles.map((role) => ({ userId, roleId: role.id })),

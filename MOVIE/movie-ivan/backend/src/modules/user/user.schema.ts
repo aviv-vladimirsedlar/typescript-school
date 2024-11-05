@@ -60,7 +60,7 @@ const loginResponseSchema = z.object({
  MARK: - assign user roles
  **********************************************************************************************************************/
 const userAssingRolesSchema = z.object({
-  roleIds: z.array(z.string()),
+  roles: z.array(z.string()),
 });
 export type UserAssignRolesInput = z.infer<typeof userAssingRolesSchema>;
 const userAssingRolesResonseSchema = z.object({

@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ReactNode } from 'react';
+
 export interface ButtonProps {
   className?: string;
-  label: string;
+  children: ReactNode;
   onClick?: (data?: any) => void | Promise<void>;
   type?: 'button' | 'submit' | 'reset';
 }

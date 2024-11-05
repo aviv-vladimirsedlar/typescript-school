@@ -1,11 +1,34 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers } from '@reduxjs/toolkit';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-import rootReducer from './rootReducer';
+import authReducer from './slices/auth.slice';
+import movieReducer from './slices/movie.slice';
+import userReducer from './slices/user.slice';
 
-const store = configureStore({
-  reducer: rootReducer,
+const persistConfig = {
+  key: 'root', // Key to store the state in storage
+  storage, // Type of storage, e.g., localStorage for web
+  whitelist: ['auth', 'user'], // Reducers you want to persist
+};
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  movie: movieReducer,
+  user: userReducer,
 });
 
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+export const persistor = persistStore(store);
+
 export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+
 export default store;

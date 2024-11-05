@@ -40,7 +40,7 @@ const mockUserRoleRoleUser = {
   updatedAt,
 };
 const mockUserWithUserRole = {
-  id: 'role-id',
+  id: 'user-id',
   firstName: 'user',
   lastName: 'user',
   email: 'text@test.com',
@@ -184,17 +184,32 @@ describe('User Controller', () => {
     it('should fetch a list of users', async () => {
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValueOnce(mockUserWithUserRole);
 
+      const page = 1;
+      const limit = 2;
+      const totalCount = 5;
+      const totalPages = Math.ceil(totalCount / limit);
+      const mockUserSecond = {
+        ...mockUserWithUserRole,
+        id: 'user-id',
+        firstName: 'user',
+        lastName: 'user',
+        email: 'text@test.com',
+      };
+
+      jest.spyOn(prisma.user, 'findMany').mockResolvedValueOnce([mockUserWithUserRole, mockUserSecond] as any);
+      jest.spyOn(prisma.user, 'count').mockResolvedValueOnce(totalCount);
       jest
         .spyOn(prisma.user, 'findMany')
         .mockResolvedValueOnce([
           { ...mockUserWithUserRole, roles: [{ ...mockUserRoleRoleUser, role: mockRoleAdmin }] } as any,
         ]);
 
-      const response = await request(app.server).get('/api/users').set('Cookie', authCookie);
+      const response = await request(app.server).get('/api/users?limit=2').set('Cookie', authCookie);
 
       expect(response.status).toBe(200);
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThan(0);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
+      expect(JSON.stringify(response.body.meta)).toBe(JSON.stringify({ page, limit, totalPages, totalCount }));
     });
   });
 
@@ -236,7 +251,7 @@ describe('User Controller', () => {
         .post(`/api/users/${userId}/assign-role`)
         .set('Cookie', authCookie)
         .send({
-          roleIds: ['author-role-id'],
+          roles: ['author'],
         });
 
       expect(response.status).toBe(201);
@@ -283,7 +298,7 @@ describe('User Controller', () => {
         .post(`/api/users/${userId}/assign-role`)
         .set('Cookie', authCookie)
         .send({
-          roleIds: ['admin-role-id', 'author-role-id'],
+          roles: ['admin', 'author'],
         });
 
       expect(response.status).toBe(201);
@@ -316,7 +331,7 @@ describe('User Controller', () => {
         .post(`/api/users/${userId}/assign-role`)
         .set('Cookie', authCookie)
         .send({
-          roleIds: ['author-role-id'],
+          roles: ['author'],
         });
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty('message', 'User already has all of the roles');
@@ -336,7 +351,7 @@ describe('User Controller', () => {
         .post(`/api/users/${userId}/assign-role`)
         .set('Cookie', authCookie)
         .send({
-          roleIds: ['admin-role-id', 'author-role-id'],
+          roles: ['admin', 'author'],
         });
       expect(response.status).toBe(404);
       expect(response.body).toHaveProperty('message', 'User not found');
@@ -381,9 +396,7 @@ describe('User Controller', () => {
       const response = await request(app.server)
         .post(`/api/users/${userId}/assign-role`)
         .set('Cookie', authCookie)
-        .send({
-          roleIds: ['admin-role-id', 'author-role-id'],
-        });
+        .send({ roles: ['admin', 'author'] });
       expect(response.status).toBe(500);
     });
   });

@@ -7,6 +7,7 @@ import Register from './pages/auth/Register';
 import Home from './pages/Home';
 import Movies from './pages/Movies';
 import ProtectedRoute from './pages/ProtectedRoute';
+import Users from './pages/Users';
 
 const App: React.FC = () => {
   const { isLoading } = useCurrentUser();
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <Route element={<ProtectedRoute type="protected" />}>
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
+          <Route path="/users" element={<Users />} />
         </Route>
 
         <Route element={<ProtectedRoute type="auth" />}>

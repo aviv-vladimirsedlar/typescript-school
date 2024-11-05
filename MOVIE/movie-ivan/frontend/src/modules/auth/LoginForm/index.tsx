@@ -65,7 +65,9 @@ export const LoginForm: React.FC = () => {
         value={formik.values.password}
       />
 
-      <Button className="w-full" label={isLoading ? '...' : 'Submit'} onClick={formik.handleSubmit} type="submit" />
+      <Button className="w-full" onClick={formik.handleSubmit} type="submit">
+        {isLoading ? '...' : 'Submit'}
+      </Button>
 
       {!!errorMessage && (
         <div className="mt-4 rounded-lg border border-red-300 bg-red-100/50 p-4 py-2 text-sm text-red-700">

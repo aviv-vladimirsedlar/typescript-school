@@ -6,7 +6,7 @@ import { RootState } from '../../config/rootReducer';
 import { updateMovieList } from '../../config/slices/movie.slice';
 
 const getMovies = async () => {
-  const response = await axiosInstance.get('/movies');
+  const response = await axiosInstance.get('/movies?limit=100');
   return response.data;
 };
 

@@ -130,8 +130,12 @@ export const MovieList = () => {
           <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{movie.description?.substring(0, 100)}...</p>
 
           <div className="flex justify-between">
-            <Button className="py-1" label="Read more" />
-            {isAbleToDelete && <Button className="bg-red-500 py-1" label="Delete" onClick={onMovieDelete(movie)} />}
+            <Button className="py-1">Read more</Button>
+            {isAbleToDelete && (
+              <Button className="bg-red-500 py-1" onClick={onMovieDelete(movie)}>
+                Delete
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -140,7 +144,7 @@ export const MovieList = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 pt-12 sm:grid-cols-2 lg:grid-cols-3">{data?.map(renderMovie)}</div>
+      <div className="grid grid-cols-1 gap-5 py-12 sm:grid-cols-2 lg:grid-cols-3">{data?.map(renderMovie)}</div>
       {renderModalDelete()}
     </>
   );
