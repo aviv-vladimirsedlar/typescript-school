@@ -78,18 +78,21 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
     formik.setFieldValue(field, event.target.value);
   };
 
-  const handleOpen = (movie?: Movie) => {
-    if (movie) {
-      formik.setValues({
-        title: movie.title,
-        description: movie.description || '',
-        duration: movie.duration.toString(),
-        year: movie.year.toString(),
-      });
-      setMovieId(movie.id);
-    }
-    modalRef?.current?.show();
-  };
+  const handleOpen = React.useCallback(
+    (movie?: Movie) => {
+      if (movie) {
+        formik.setValues({
+          title: movie.title,
+          description: movie.description || '',
+          duration: movie.duration.toString(),
+          year: movie.year.toString(),
+        });
+        setMovieId(movie.id);
+      }
+      modalRef?.current?.show();
+    },
+    [formik, setMovieId],
+  );
 
   const handleClose = () => {
     modalRef?.current?.hide();
@@ -101,7 +104,7 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
     modalRef.current = modal;
   }, []);
 
-  useImperativeHandle(ref, () => ({ open: handleOpen, close: handleClose }), []);
+  useImperativeHandle(ref, () => ({ open: handleOpen, close: handleClose }), [handleOpen]);
 
   return (
     <div

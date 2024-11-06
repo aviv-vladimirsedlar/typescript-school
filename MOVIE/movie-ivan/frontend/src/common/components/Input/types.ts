@@ -1,4 +1,5 @@
 export interface InputProps {
+  id?: string;
   className?: string;
   classNameInput?: string;
   error?: string;

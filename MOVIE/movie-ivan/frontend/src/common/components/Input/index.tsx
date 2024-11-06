@@ -4,6 +4,7 @@ import React from 'react';
 import { InputProps } from './types';
 
 const Input: React.FC<InputProps> = ({
+  id,
   className,
   classNameInput,
   error,
@@ -19,7 +20,7 @@ const Input: React.FC<InputProps> = ({
       {label}
     </label>
     <input
-      id={name}
+      id={id || name}
       className={clsx('block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900', classNameInput, {
         'border border-red-500': !!error,
         'border border-gray-200': !error,

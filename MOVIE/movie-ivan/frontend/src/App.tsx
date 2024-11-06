@@ -20,6 +20,7 @@ const App: React.FC = () => {
       <Routes>
         <Route element={<ProtectedRoute type="protected" />}>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/users" element={<Users />} />
         </Route>

@@ -30,9 +30,15 @@ export const MovieList = () => {
     const isAbleToEdit = isAdmin || currentUser?.id === movie.owner.id;
     const isAbleToDelete = isAdmin || currentUser?.id === movie.owner.id;
     return (
-      <div key={movie.id} className="col-span-1 flex h-full flex-col rounded-lg border border-gray-100 bg-white shadow">
-        <div>
-          <img className="rounded-t-lg opacity-70" src="https://placehold.co/600x400" alt="" />
+      <div
+        key={movie.id}
+        className="col-span-1 flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow"
+      >
+        <div className="relative">
+          <div
+            className="h-[300px] w-full bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(https://placehold.co/600x400)` }}
+          />
         </div>
         <div id="size" className="flex h-full flex-grow flex-col justify-between p-5">
           <div>
@@ -80,7 +86,7 @@ export const MovieList = () => {
           Create movie
         </Button>
       )}
-      <div className="grid grid-cols-1 gap-5 pt-4 sm:grid-cols-2 lg:grid-cols-3">{data?.map(renderMovie)}</div>
+      <div className="grid w-full grid-cols-1 gap-5 pt-4 sm:grid-cols-2 lg:grid-cols-3">{data?.map(renderMovie)}</div>
       <MovieCreateEditModal ref={movieCreateEditRef} refetch={refetch} />
       <MovieDeleteConfirmModal ref={movieDeleteRef} refetch={refetch} />
     </div>
