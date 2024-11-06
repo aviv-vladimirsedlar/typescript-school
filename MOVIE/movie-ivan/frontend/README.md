@@ -1,46 +1,108 @@
-# Getting Started with Create React App
+# Frontend Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a React application configured with TypeScript, Redux, and Tailwind CSS. It includes ESLint and Prettier for code quality and integrates testing through WebdriverIO with Cucumber for BDD, along with Storybook for UI component documentation.
+
+## Table of Contents
+
+- [Technologies](#technologies)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
+
+## Technologies
+
+- **React:** A JavaScript library for building user interfaces.
+- **Redux & React-Query:** State management tools.
+- **TypeScript:** A superset of JavaScript that adds typing.
+- **Tailwind CSS:** A utility-first CSS framework for styling.
+- **Formik & Yup:** Form management and validation libraries.
+- **Storybook:** An open-source tool for developing UI components in isolation.
+- **WebdriverIO & Cucumber:** For end-to-end testing.
+
+## Features
+
+- **TypeScript Support:** Strongly typed code with TypeScript.
+- **State Management:** Redux and React-Query for efficient state management.
+- **CSS Framework:** Tailwind CSS for styling.
+- **Form Management:** Formik and Yup for form handling and validation.
+- **Testing Setup:** Includes both Jest and WebdriverIO with Cucumber for end-to-end and component tests.
+- **Storybook Integration:** Document and visually test UI components.
+- **CI/CD Ready:** Configured with Chromatic for visual regression testing on Storybook.
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js**: Make sure you have Node.js installed.
+- **Yarn**: Use Yarn for package management.
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/your-repo/frontend.git
+cd frontend
+yarn install
+```
+
+## Project structure
+
+```graph
+
+├── src
+│   ├── common
+│   │   ├── components  # Reusable components
+│   │   └── hooks       # Custom hooks
+│   ├── modules         # App-specific feature modules
+│   ├── layouts         # Layout components
+│   └── store           # Redux store setup and slices
+├── tests               # End-to-end tests with WebdriverIO and Cucumber
+│   ├── features        # Cucumber feature files
+│   ├── pageobjects     # Page objects for WebdriverIO tests
+│   └── step-definitions # Step definitions for Cucumber tests
+├── .storybook          # Storybook configuration
+└── public
+
+```
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, you can run the following commands:
 
-### `npm start`
+#### Start the App
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`yarn start` - Runs the app in development mode on http://localhost:3000.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### Build the App
 
-### `npm test`
+`yarn build` - Builds the app for production to the build folder.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Run Tests
 
-### `npm run build`
+`yarn test` - Launches the test runner in the interactive watch mode.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Format Code
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+`yarn format` - Formats code according to Prettier configuration.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Lint Code
 
-### `npm run eject`
+`yarn lint` - Checks code for issues using ESLint.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### Fix Lint Errors
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`yarn lint:fix` - Automatically fixes lint errors.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### Run WebdriverIO Tests
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+`yarn wdio` - Runs the end-to-end tests with WebdriverIO.
 
-## Learn More
+#### Start Storybook
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`yarn storybook` - Launches Storybook on http://localhost:6006 for developing and testing UI components.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Build Storybook
+
+`yarn build-storybook` - Builds Storybook as a static web application in the storybook-static directory.
