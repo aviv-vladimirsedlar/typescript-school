@@ -17,7 +17,7 @@ const Input: React.FC<InputProps> = ({
 }) => (
   <div className={clsx('mb-5', className)}>
     <label htmlFor={name} className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-      {label}
+      {label} {required && <span>*</span>}
     </label>
     <input
       id={id || name}
