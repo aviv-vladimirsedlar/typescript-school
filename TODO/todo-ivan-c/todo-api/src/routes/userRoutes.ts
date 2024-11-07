@@ -1,37 +1,66 @@
-import { Router } from "express";
-import { body } from "express-validator";
+import { FastifyInstance } from "fastify";
 import { User } from "../models/userModel";
 import { login, register } from "../controllers/userControllers";
+import { LoginRequestBody, RegisterRequestBody } from "../types/requests";
 
-const router = Router();
+const MIN_PASS_LENGTH = 4;
 
-router.post(
-  "/register",
-  [
-    body("email")
-      .isEmail()
-      .withMessage("Please enter a valid email")
-      .custom((value, req) => {
-        return User.findOne({
-          where: {
-            email: value,
+async function userRoutes(app: FastifyInstance) {
+  app.post<{ Body: RegisterRequestBody }>(
+    "/register",
+    {
+      schema: {
+        tags: ["User"],
+        body: {
+          type: "object",
+          required: ["email", "password"],
+          properties: {
+            email: { type: "string", format: "email" },
+            password: { type: "string", minLength: MIN_PASS_LENGTH },
           },
-        }).then((user) => {
-          if (user) {
-            return Promise.reject("Email address already exists");
-          }
-        });
-      })
-      .normalizeEmail(),
-    body("password").trim().isLength({ min: 4 }),
-    body("name")
-      .trim()
-      .isLength({ min: 2 })
-      .withMessage("Name must be at least 2 characters long"),
-  ],
-  register
-);
+        },
+      },
+    },
+    async (request, reply) => {
+      const { email } = request.body;
 
-router.post("/login", login);
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        reply.status(400).send({ message: "Email address already exists" });
+        return;
+      }
 
-export default router;
+      await register(request.body, reply);
+    }
+  );
+
+  app.post<{ Body: LoginRequestBody }>(
+    "/login",
+    {
+      schema: {
+        tags: ["User"],
+        body: {
+          type: "object",
+          required: ["email", "password"],
+          properties: {
+            email: { type: "string", format: "email" },
+            password: { type: "string", minLength: MIN_PASS_LENGTH },
+          },
+        },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              token: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      await login(request.body, reply);
+    }
+  );
+}
+
+export default userRoutes;

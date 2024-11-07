@@ -1,70 +1,50 @@
-import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
+import { FastifyReply } from "fastify";
 import bcrypt from "bcryptjs";
 import { User } from "../models/userModel";
 import jwt from "jsonwebtoken";
 import { UnauthorizedError } from "../errors/unauthorizedError";
-import { ValidationError } from "../errors/validationError";
+import { LoginRequestBody, RegisterRequestBody } from "../types/requests";
+import { InternalError } from "../errors/internalError";
 
-export const register = (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    throw new ValidationError(errors.array());
-  }
-
-  const { email, password, name } = req.body;
-
-  bcrypt
-    .hash(password, 12)
-    .then((hashedPw) => {
-      const user = User.build({
-        email,
-        password: hashedPw,
-        name,
-      });
-      return user.save();
-    })
-    .then((result: any) => {
-      res.status(201).json({ userId: result.id });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      throw error;
+export const register = async (
+  reqBody: RegisterRequestBody,
+  reply: FastifyReply
+) => {
+  try {
+    const { email, password, name } = reqBody;
+    const hashedPw = await bcrypt.hash(password, 12);
+    const user = User.build({
+      email,
+      password: hashedPw,
+      name,
     });
+    const result = await user.save();
+    return reply.status(201).send({ userId: result.id });
+  } catch (err) {
+    throw new InternalError(err);
+  }
 };
 
-export const login = (req: Request, res: Response, next: NextFunction) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  let loadedUser: User;
-  User.findOne({
-    where: {
-      email: email,
-    },
-  })
-    .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError();
-      }
-      loadedUser = user;
-      return bcrypt.compare(password, user.password);
-    })
-    .then((isEqual) => {
-      if (!isEqual) {
-        throw new UnauthorizedError();
-      }
+export const login = async (reqBody: LoginRequestBody, reply: FastifyReply) => {
+  try {
+    const { email, password } = reqBody;
+    const user = await User.findOne({ where: { email } });
 
-      const token = jwt.sign({ userId: loadedUser.id.toString() }, "secret", {
-        expiresIn: "1h",
-      });
-      res.status(200).json({ token });
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+    if (!user) {
+      throw new UnauthorizedError();
+    }
+
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
+      throw new UnauthorizedError();
+    }
+
+    const token = jwt.sign({ userId: user.id.toString() }, "secret", {
+      expiresIn: "1h",
     });
+    console.log(token);
+    reply.status(200).send({ token });
+  } catch (err) {
+    throw new InternalError(err);
+  }
 };

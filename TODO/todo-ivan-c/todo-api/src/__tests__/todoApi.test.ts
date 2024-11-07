@@ -1,19 +1,12 @@
 import request from "supertest";
-import app from "../app";
-import { Server } from "http";
-import { sequelize, serverReadyPromise } from "../server";
-import logger from "../config/logger";
-
-let server: Server;
+import { serverReadyPromise, fastifyInstance, sequelize } from "../server";
 
 beforeAll(async () => {
-  server = await serverReadyPromise;
+  await serverReadyPromise;
 });
 
 afterAll(async () => {
-  if (server) {
-    await server.close();
-  }
+  await fastifyInstance.close();
   await sequelize.close();
 });
 
@@ -22,11 +15,10 @@ let userId: number;
 
 beforeEach(async () => {
   const email = `test${Date.now()}@example.com`;
-  logger.debug(`Created test user with email: ${email}`);
   const password = "password123";
 
   // Register a user and get a token
-  const response = await request(app)
+  const response = await request(fastifyInstance.server)
     .post("/user/register")
     .send({
       email,
@@ -37,7 +29,7 @@ beforeEach(async () => {
 
   userId = response.body.userId;
 
-  const loginResponse = await request(app)
+  const loginResponse = await request(fastifyInstance.server)
     .post("/user/login")
     .send({
       email,
@@ -49,7 +41,7 @@ beforeEach(async () => {
 });
 
 const createTodo = async (title: string, description: string) => {
-  const response = await request(app)
+  const response = await request(fastifyInstance.server)
     .post("/todos")
     .set("Authorization", `Bearer ${token}`)
     .send({
@@ -76,7 +68,7 @@ describe("Todo API", () => {
     const todoId = todo.id;
 
     // Then, update the todo
-    const updateResponse = await request(app)
+    const updateResponse = await request(fastifyInstance.server)
       .put(`/todos/${todoId}`)
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -95,7 +87,7 @@ describe("Todo API", () => {
     const todoId = todo.id;
 
     // Then, delete the todo
-    const deleteResponse = await request(app)
+    const deleteResponse = await request(fastifyInstance.server)
       .delete(`/todos/${todoId}`)
       .set("Authorization", `Bearer ${token}`)
       .expect(204);
@@ -106,7 +98,7 @@ describe("Todo API", () => {
 
     await createTodo("Test Todo 2", "Test Description 2");
 
-    const response = await request(app)
+    const response = await request(fastifyInstance.server)
       .get("/todos")
       .set("Authorization", `Bearer ${token}`)
       .expect(200);

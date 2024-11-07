@@ -1,32 +1,27 @@
 import request from "supertest";
-import app from "../app";
-import { Server } from "http";
-import { sequelize, serverReadyPromise } from "../server";
-import logger from "../config/logger";
-
-let server: Server;
+import { serverReadyPromise, fastifyInstance, sequelize } from "../server";
 
 beforeAll(async () => {
-  server = await serverReadyPromise;
+  await serverReadyPromise;
 });
 
 afterAll(async () => {
-  if (server) {
-    await server.close();
-  }
+  await fastifyInstance.close();
   await sequelize.close();
 });
 
 describe("User API", () => {
+  const password = "password123";
+  const name = "Test User";
   it("should register a new user", async () => {
     const email = `test${Date.now()}@example.com`;
-    logger.debug(`Created test user with email: ${email}`);
-    const response = await request(app)
+
+    const response = await request(fastifyInstance.server)
       .post("/user/register")
       .send({
         email,
-        password: "password123",
-        name: "Test User",
+        password,
+        name,
       })
       .expect(201);
 
@@ -35,23 +30,23 @@ describe("User API", () => {
 
   it("should login an existing user", async () => {
     const email = `test${Date.now()}@example.com`;
-    logger.debug(`Created test user with email: ${email}`);
+
     // First, register the user
-    await request(app)
+    await request(fastifyInstance.server)
       .post("/user/register")
       .send({
         email,
-        password: "password123",
-        name: "Test User",
+        password,
+        name,
       })
       .expect(201);
 
     // Then, login the user
-    const response = await request(app)
+    const response = await request(fastifyInstance.server)
       .post("/user/login")
       .send({
         email,
-        password: "password123",
+        password,
       })
       .expect(200);
 

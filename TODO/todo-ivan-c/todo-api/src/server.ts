@@ -1,27 +1,25 @@
-import { Server } from "http";
+import { FastifyInstance } from "fastify";
 import app from "./app";
 import { sequelize } from "./config/database";
-import logger from "./config/logger";
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT as string, 10) || 8080;
 
-let server: Server;
+let fastifyInstance: FastifyInstance;
 
 // Create a promise that resolves when both the server and database are ready
-export const serverReadyPromise: Promise<Server> = sequelize
+export const serverReadyPromise: Promise<FastifyInstance> = sequelize
   .sync()
   .then(() => {
-    logger.info("Database synced");
-    return new Promise<Server>((resolve) => {
-      server = app.listen(PORT, () => {
-        logger.info(`Server started on PORT ${PORT}`);
-        resolve(server);
-      });
-    });
+    app.log.info("Database synced");
+    return app.listen({ port: PORT });
+  })
+  .then(() => {
+    fastifyInstance = app;
+    return fastifyInstance;
   })
   .catch((error) => {
-    logger.error(`Error during server startup: ${error}`);
+    app.log.error(`Error during server startup: ${error}`);
     throw error;
   });
 
-export { server, sequelize };
+export { fastifyInstance, sequelize };

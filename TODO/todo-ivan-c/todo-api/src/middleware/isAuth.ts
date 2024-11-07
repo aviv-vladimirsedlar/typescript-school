@@ -1,16 +1,21 @@
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "../errors/appError";
 import { UnauthorizedError } from "../errors/unauthorizedError";
+import { AuthenticatedRequest } from "../types/requests";
 
-export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.get("Authorization");
+interface DecodedToken {
+  userId: string;
+}
+
+export const isAuth = async (req: AuthenticatedRequest) => {
+  const authHeader = req.headers.authorization;
+
   if (!authHeader) {
     throw new UnauthorizedError();
   }
 
   const token = authHeader.split(" ")[1];
-  let decodedToken;
+  let decodedToken: DecodedToken;
   try {
     decodedToken = jwt.verify(token, "secret") as { userId: string };
   } catch (err) {
@@ -21,6 +26,5 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     throw new UnauthorizedError();
   }
 
-  req.userId = parseInt(decodedToken.userId, 10);
-  next();
+  req.userId = decodedToken.userId;
 };

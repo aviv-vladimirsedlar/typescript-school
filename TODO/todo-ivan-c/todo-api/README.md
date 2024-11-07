@@ -25,3 +25,11 @@ npx jest
 # Prerequisites
 
 Make sure you have MySQL installed and running on your machine
+
+# API Documentation
+
+The API documentation is available via Swagger. To access the Swagger UI, start the application and navigate to:
+
+```
+http://localhost:8080/docs
+```

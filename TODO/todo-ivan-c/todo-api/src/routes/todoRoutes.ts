@@ -1,5 +1,4 @@
-import { Router } from "express";
-import { body } from "express-validator";
+import { FastifyInstance } from "fastify";
 import {
   createTodo,
   deleteTodo,
@@ -7,37 +6,85 @@ import {
   updateTodo,
 } from "../controllers/todoControllers";
 import { isAuth } from "../middleware/isAuth";
+import {
+  CreateTodoRequestBody,
+  UpdateTodoRequestBody,
+} from "../types/requests";
+import {
+  CreateTodoRequest,
+  UpdateTodoRequest,
+  DeleteTodoRequest,
+  GetTodosRequest,
+} from "../types/requests";
 
-const router = Router();
+async function todoRoutes(app: FastifyInstance) {
+  app.post<{ Body: CreateTodoRequestBody }>(
+    "/",
+    {
+      preHandler: [isAuth],
+      schema: {
+        tags: ["Todo"],
+        body: {
+          type: "object",
+          required: ["title", "description"],
+          properties: {
+            title: { type: "string", minLength: 1 },
+            description: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      await createTodo(request as CreateTodoRequest, reply);
+    }
+  );
 
-router.post(
-  "/",
-  isAuth,
-  [
-    body("title").trim().isLength({ min: 1 }).withMessage("Title is required"),
-    body("description")
-      .trim()
-      .isLength({ min: 1 })
-      .withMessage("Description is required"),
-  ],
-  createTodo
-);
+  app.put<{ Params: { todoId: string }; Body: UpdateTodoRequestBody }>(
+    "/:todoId",
+    {
+      preHandler: [isAuth],
+      schema: {
+        tags: ["Todo"],
+        body: {
+          type: "object",
+          required: ["title", "description"],
+          properties: {
+            title: { type: "string", minLength: 1 },
+            description: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      await updateTodo(request as UpdateTodoRequest, reply);
+    }
+  );
 
-router.put(
-  "/:todoId",
-  isAuth,
-  [
-    body("title").trim().isLength({ min: 1 }).withMessage("Title is required"),
-    body("description")
-      .trim()
-      .isLength({ min: 1 })
-      .withMessage("Description is required"),
-  ],
-  updateTodo
-);
+  app.delete<{ Params: { todoId: string } }>(
+    "/:todoId",
+    {
+      preHandler: [isAuth],
+      schema: {
+        tags: ["Todo"],
+      },
+    },
+    async (request, reply) => {
+      await deleteTodo(request as DeleteTodoRequest, reply);
+    }
+  );
 
-router.delete("/:todoId", isAuth, deleteTodo);
+  app.get(
+    "/",
+    {
+      preHandler: [isAuth],
+      schema: {
+        tags: ["Todo"],
+      },
+    },
+    async (request, reply) => {
+      await getTodos(request as GetTodosRequest, reply);
+    }
+  );
+}
 
-router.get("/", isAuth, getTodos);
-
-export default router;
+export default todoRoutes;

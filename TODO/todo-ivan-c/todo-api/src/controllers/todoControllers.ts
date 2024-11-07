@@ -1,123 +1,103 @@
-import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
+import { FastifyReply } from "fastify";
 import { Todo } from "../models/todoModel";
 import { User } from "../models/userModel";
 import { Op } from "sequelize";
 import { ForbiddenError } from "../errors/forbiddenError";
-import { UnauthorizedError } from "../errors/unauthorizedError";
 import { NotFoundError } from "../errors/notFoundError";
-import { ValidationError } from "../errors/validationError";
+import {
+  CreateTodoRequest,
+  DeleteTodoRequest,
+  GetTodosRequest,
+  UpdateTodoRequest,
+} from "../types/requests";
+import { InternalError } from "../errors/internalError";
 
-export const createTodo = (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    throw new ValidationError(errors.array());
-  }
-
-  const { title, description } = req.body;
-  const userId = req.userId;
-
-  User.findByPk(userId)
-    .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError();
-      }
-
-      const todo = Todo.build({
-        title,
-        description,
-        userId: user.id,
-      });
-
-      return todo.save();
-    })
-    .then((result: any) => {
-      res.status(201).json({
-        id: result.id,
-        title: result.title,
-        description: result.description,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
-};
-
-export const updateTodo = (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    throw new ValidationError(errors.array());
-  }
-
-  const { title, description } = req.body;
-  const todoId = req.params.todoId;
-  const userId = req.userId;
-
-  Todo.findByPk(todoId)
-    .then((todo) => {
-      if (!todo) {
-        throw new NotFoundError();
-      }
-
-      if (todo.userId !== userId) {
-        throw new ForbiddenError();
-      }
-
-      todo.title = title;
-      todo.description = description;
-
-      return todo.save();
-    })
-    .then((result: any) => {
-      res.status(200).json({
-        id: result.id,
-        title: result.title,
-        description: result.description,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
-};
-
-export const deleteTodo = (req: Request, res: Response, next: NextFunction) => {
-  const todoId = req.params.todoId;
-  const userId = req.userId;
-
-  Todo.findByPk(todoId)
-    .then((todo) => {
-      if (!todo) {
-        throw new NotFoundError();
-      }
-
-      if (todo.userId !== userId) {
-        throw new ForbiddenError();
-      }
-
-      return todo.destroy();
-    })
-    .then(() => {
-      res.status(204).send();
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
-};
-
-export const getTodos = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+export const createTodo = async (
+  req: CreateTodoRequest,
+  reply: FastifyReply
 ) => {
+  try {
+    const { title, description } = req.body;
+    const userId = req.userId;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+
+    const todo = await Todo.create({
+      title,
+      description,
+      userId: user.id,
+    });
+
+    reply.status(201).send({
+      id: todo.id,
+      title: todo.title,
+      description: todo.description,
+    });
+  } catch (err) {
+    throw new InternalError(err);
+  }
+};
+
+export const updateTodo = async (
+  req: UpdateTodoRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const { title, description } = req.body;
+    const todoId = req.params.todoId;
+    const userId = req.userId;
+
+    const todo = await Todo.findByPk(todoId);
+    if (!todo) {
+      throw new NotFoundError();
+    }
+
+    if (todo.userId !== parseInt(userId, 10)) {
+      throw new ForbiddenError();
+    }
+
+    todo.title = title;
+    todo.description = description;
+    await todo.save();
+
+    reply.status(200).send({
+      id: todo.id,
+      title: todo.title,
+      description: todo.description,
+    });
+  } catch (err) {
+    throw new InternalError(err);
+  }
+};
+
+export const deleteTodo = async (
+  req: DeleteTodoRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const todoId = req.params.todoId;
+    const userId = req.userId;
+
+    const todo = await Todo.findByPk(todoId);
+    if (!todo) {
+      throw new NotFoundError();
+    }
+
+    if (todo.userId !== parseInt(userId, 10)) {
+      throw new ForbiddenError();
+    }
+
+    await todo.destroy();
+    reply.status(204).send();
+  } catch (err) {
+    throw new InternalError(err);
+  }
+};
+
+export const getTodos = async (req: GetTodosRequest, reply: FastifyReply) => {
   try {
     const userId = req.userId;
     const page = parseInt(req.query.page as string) || 1;
@@ -137,16 +117,13 @@ export const getTodos = async (
       order: [["title", sort]],
     });
 
-    res.status(200).json({
+    reply.status(200).send({
       data: result.rows,
       page,
       limit,
       total: result.count,
     });
-  } catch (error: any) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+  } catch (err) {
+    throw new InternalError(err);
   }
 };
