@@ -5,12 +5,14 @@ import { LoginRequestBody, RegisterRequestBody } from "../types/requests";
 
 const MIN_PASS_LENGTH = 4;
 
+const userTag = "User";
+
 async function userRoutes(app: FastifyInstance) {
   app.post<{ Body: RegisterRequestBody }>(
     "/register",
     {
       schema: {
-        tags: ["User"],
+        tags: [userTag],
         body: {
           type: "object",
           required: ["email", "password"],
@@ -38,7 +40,7 @@ async function userRoutes(app: FastifyInstance) {
     "/login",
     {
       schema: {
-        tags: ["User"],
+        tags: [userTag],
         body: {
           type: "object",
           required: ["email", "password"],

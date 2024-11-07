@@ -17,13 +17,15 @@ import {
   GetTodosRequest,
 } from "../types/requests";
 
+const todoTag = "Todo";
+
 async function todoRoutes(app: FastifyInstance) {
   app.post<{ Body: CreateTodoRequestBody }>(
     "/",
     {
       preHandler: [isAuth],
       schema: {
-        tags: ["Todo"],
+        tags: [todoTag],
         body: {
           type: "object",
           required: ["title", "description"],
@@ -44,7 +46,7 @@ async function todoRoutes(app: FastifyInstance) {
     {
       preHandler: [isAuth],
       schema: {
-        tags: ["Todo"],
+        tags: [todoTag],
         body: {
           type: "object",
           required: ["title", "description"],
@@ -65,7 +67,7 @@ async function todoRoutes(app: FastifyInstance) {
     {
       preHandler: [isAuth],
       schema: {
-        tags: ["Todo"],
+        tags: [todoTag],
       },
     },
     async (request, reply) => {
@@ -78,7 +80,7 @@ async function todoRoutes(app: FastifyInstance) {
     {
       preHandler: [isAuth],
       schema: {
-        tags: ["Todo"],
+        tags: [todoTag],
       },
     },
     async (request, reply) => {
