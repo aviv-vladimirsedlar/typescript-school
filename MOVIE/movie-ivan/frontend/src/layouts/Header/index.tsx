@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import Button from '../../common/components/Button';
 import { useAuth } from '../../common/hooks/useAuth';
 import { useLogout } from '../../common/hooks/useLogout';
 
@@ -15,12 +16,13 @@ export const Header: React.FC = () => {
   const renderLogoutButton = () => {
     if (currentUser) {
       return (
-        <button
-          className="ml-5 rounded border-2 border-gray-200 bg-gray-100 p-2 text-xs font-bold"
+        <Button
+          data-testid="btn-logout"
+          className="ml-5 rounded border border-black bg-gray-50 p-2 text-xs font-bold text-black"
           onClick={handleLogout}
         >
           {isLoading ? '...' : 'Logout'}
-        </button>
+        </Button>
       );
     }
     return null;

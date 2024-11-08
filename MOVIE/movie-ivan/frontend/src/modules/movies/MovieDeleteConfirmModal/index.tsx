@@ -47,6 +47,7 @@ export const MovieDeleteConfirmModal = forwardRef(function DeleteComponent({ ref
 
   return (
     <div
+      data-testid="movie-delete-confirm-modal"
       id="movie-delete-confirm-modal"
       ref={modalRef as React.RefObject<HTMLDivElement>}
       className="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0"
@@ -95,10 +96,14 @@ export const MovieDeleteConfirmModal = forwardRef(function DeleteComponent({ ref
               Are you sure you want to delete <strong>"{movieDelete?.title}"?</strong>
             </h3>
             <div className="flex justify-end gap-4">
-              <Button className="bg-red-500 py-2" onClick={handleMovieDeleteConfirm}>
+              <Button
+                data-testid="movie-delete-confirm-btn"
+                className="bg-red-500 py-2"
+                onClick={handleMovieDeleteConfirm}
+              >
                 Yes
               </Button>
-              <Button className="py-2" onClick={handleMovieDeleteCancel}>
+              <Button data-testid="movie-delete-cancel-btn" className="py-2" onClick={handleMovieDeleteCancel}>
                 No
               </Button>
             </div>

@@ -2,6 +2,16 @@
 
 This project is a starter template for building a Fastify API with authentication, PostgreSQL, Prisma, and Kubernetes support. It includes JWT-based authentication with `passport`, user creation, ESLint and Prettier configurations, and containerized PostgreSQL. Additionally, it provides scripts to start and stop Kubernetes services.
 
+## Table of Contents
+
+- [Features](#features)
+- [Endpoints](#endpoints)
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Project Setup](#project-setup)
+- [Usage](#usage)
+
 ## Features
 
 - **Code Quality, Formatting and Linting**: Configured with ESLint and Prettier for code quality and consistent formatting.

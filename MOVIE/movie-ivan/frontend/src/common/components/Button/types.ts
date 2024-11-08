@@ -2,7 +2,7 @@
 import { ReactNode } from 'react';
 
 export interface ButtonProps {
-  id?: string;
+  'data-testid'?: string;
   className?: string;
   children: ReactNode;
   onClick?: (data?: any) => void | Promise<void>;

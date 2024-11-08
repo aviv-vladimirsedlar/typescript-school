@@ -1,5 +1,5 @@
 export interface InputProps {
-  id?: string;
+  'data-testid'?: string;
   className?: string;
   classNameInput?: string;
   error?: string;

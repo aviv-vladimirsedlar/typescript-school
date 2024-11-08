@@ -108,6 +108,7 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
 
   return (
     <div
+      data-testidid="movie-create-edit-modal"
       id="movie-create-edit-modal"
       ref={modalRef as React.RefObject<HTMLDivElement>}
       className="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0"
@@ -140,8 +141,16 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
             <h3 className="mb-5 text-lg font-bold">{movieId ? 'Edit movie' : 'Create movie'}</h3>
 
             <div className="text-left">
-              <Input label="Title" name="title" onChange={onChange('title')} required value={formik.values.title} />
               <Input
+                data-testid="title-input"
+                label="Title"
+                name="title"
+                onChange={onChange('title')}
+                required
+                value={formik.values.title}
+              />
+              <Input
+                data-testid="duration-input"
                 label="Duration"
                 name="duration"
                 onChange={onChange('duration')}
@@ -150,6 +159,7 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
                 value={formik.values.duration}
               />
               <Input
+                data-testid="year-input"
                 label="Year"
                 name="year"
                 onChange={onChange('year')}
@@ -158,6 +168,7 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
                 value={formik.values.year}
               />
               <Input
+                data-testid="description-input"
                 label="Description"
                 name="description"
                 onChange={onChange('description')}
@@ -172,10 +183,10 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
             </div>
 
             <div className="flex justify-end gap-4">
-              <Button className="bg-red-500 py-2" onClick={handleClose}>
+              <Button data-testid="create-edit-movie-cancel-btn" className="bg-red-500 py-2" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button className="py-2" onClick={formik.handleSubmit}>
+              <Button data-testid="create-edit-movie-confirm-btn" className="py-2" onClick={formik.handleSubmit}>
                 Confirm
               </Button>
             </div>

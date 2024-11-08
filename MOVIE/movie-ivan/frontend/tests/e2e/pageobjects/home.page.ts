@@ -4,7 +4,15 @@ import Page from './page';
 
 class HomePage extends Page {
   public get welcomeMessage() {
-    return $('#home');
+    return $('[data-testid="home-message"]');
+  }
+
+  public get btnLogout() {
+    return $('[data-testid="logout-btn"]');
+  }
+
+  public async logout() {
+    await this.btnLogout.click();
   }
 
   public open() {

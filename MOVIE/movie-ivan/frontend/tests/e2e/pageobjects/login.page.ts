@@ -4,25 +4,37 @@ import Page from './page';
 
 class LoginPage extends Page {
   public get inputEmail() {
-    return $('#email');
+    return $('[data-testid="email-input"]');
   }
 
   public get inputPassword() {
-    return $('#password');
+    return $('[data-testid="password-input"]');
   }
 
-  public get btnSubmit() {
-    return $('#btn-submit');
+  public get btnLogin() {
+    return $('[data-testid="btn-login"]');
+  }
+
+  public get btnLogout() {
+    return $('[data-testid="btn-logout"]');
   }
 
   public get errorMessage() {
-    return $('#login-error-message');
+    return $('[data-testid="login-error-message"]');
+  }
+
+  public async isLoginPageVisible() {
+    return this.btnLogin.getText();
   }
 
   public async login(email: string, password: string) {
     await this.inputEmail.setValue(email);
     await this.inputPassword.setValue(password);
-    await this.btnSubmit.click();
+    await this.btnLogin.click();
+  }
+
+  public async logout() {
+    await this.btnLogout.click();
   }
 
   public open() {

@@ -56,7 +56,7 @@ export const LoginForm: React.FC = () => {
   return (
     <form className="mx-auto w-full max-w-sm">
       <Input
-        id="email"
+        data-testid="email-input"
         label="Your email"
         name="email"
         onChange={onChange('email')}
@@ -64,7 +64,7 @@ export const LoginForm: React.FC = () => {
         value={formik.values.email}
       />
       <Input
-        id="password"
+        data-testid="password-input"
         label="Your password"
         name="password"
         onChange={onChange('password')}
@@ -73,13 +73,13 @@ export const LoginForm: React.FC = () => {
         value={formik.values.password}
       />
 
-      <Button id="btn-submit" className="w-full" onClick={formik.handleSubmit} type="submit">
+      <Button data-testid="btn-login" className="w-full" onClick={formik.handleSubmit} type="submit">
         {isLoading ? '...' : 'Submit'}
       </Button>
 
       {!!errorMessage && (
         <div
-          id="login-error-message"
+          data-testid="login-error-message"
           className="mt-4 rounded-lg border border-red-300 bg-red-100/50 p-4 py-2 text-sm text-red-700"
         >
           {errorMessage}
