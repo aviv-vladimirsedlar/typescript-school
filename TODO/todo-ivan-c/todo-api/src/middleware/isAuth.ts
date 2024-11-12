@@ -19,7 +19,7 @@ export const isAuth = async (req: AuthenticatedRequest) => {
   try {
     decodedToken = jwt.verify(token, "secret") as { userId: string };
   } catch (err) {
-    throw new AppError("JWT token verification failed.", 500);
+    throw new UnauthorizedError();
   }
 
   if (!decodedToken) {

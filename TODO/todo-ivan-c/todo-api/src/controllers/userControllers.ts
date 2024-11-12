@@ -39,7 +39,7 @@ export const login = async (reqBody: LoginRequestBody, reply: FastifyReply) => {
       throw new UnauthorizedError();
     }
 
-    const token = jwt.sign({ userId: user.id.toString() }, "secret", {
+    const token = jwt.sign({ userId: user.id.toString(), email }, "secret", {
       expiresIn: "1h",
     });
     console.log(token);
