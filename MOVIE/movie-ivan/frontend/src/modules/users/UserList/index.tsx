@@ -1,23 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Button from '../../../common/components/Button';
-import { useAssinRoles } from '../../../common/hooks/useAssinRoles';
 import { useCurrentUser } from '../../../common/hooks/useCurrentUser';
-import { useUsers } from '../../../common/hooks/useUsers';
+
+import { useHook } from './hook';
 
 export const UserList = () => {
-  const { data, isLoading: isLoadingList } = useUsers();
+  const { assignUserId, data, handleAssignAuthor, isLoadingList } = useHook();
   const { isAdmin } = useCurrentUser();
-
-  const { mutate: assingRoles } = useAssinRoles();
-
-  const [assignUserId, setAssignUserId] = useState<string | null>(null);
-
-  const handleAssignAuthor = (userId: string) => async () => {
-    setAssignUserId(userId);
-    await assingRoles({ userId, roles: ['author'] });
-    setAssignUserId(null);
-  };
 
   if (isLoadingList) {
     return <div className="container p-10 text-center">Loading...</div>;

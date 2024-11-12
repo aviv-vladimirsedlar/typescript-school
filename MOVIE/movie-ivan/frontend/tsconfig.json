@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["@wdio/globals/types", "@wdio/cucumber-framework"]
   },
   "include": ["src", "tests/e2e/step-definitions/movieManagement.steps.ts"]
 }

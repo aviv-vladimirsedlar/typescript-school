@@ -1,69 +1,12 @@
-import { useFormik } from 'formik';
-import React, { useState } from 'react';
-import * as Yup from 'yup';
+import React from 'react';
 
 import Button from '../../../common/components/Button';
 import Input from '../../../common/components/Input';
-import { useRegister } from '../../../common/hooks/useRegister';
 
-const LoginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Email is required'),
-  firstName: Yup.string().required('First name is required'),
-  lastName: Yup.string().required('Last name is required'),
-  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-  passwordConfirm: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-});
-
-interface FormFields {
-  email: string;
-  password: string;
-  passwordConfirm: string;
-  firstName: string;
-  lastName: string;
-}
-
-const initialValues: FormFields = {
-  email: 'ivanvukusic-ext@aviv-group.com',
-  password: 'Test@#12345',
-  passwordConfirm: 'Test@#12345',
-  firstName: 'Ivan',
-  lastName: '',
-};
+import { useHook } from './hook';
 
 export const RegisterForm: React.FC = () => {
-  const { mutate: register, isLoading } = useRegister();
-
-  const [errorMessage, setErrorMessage] = useState<string>('');
-
-  const handleSubmit = async () => {
-    const errors = await formik.validateForm();
-    if (!Object.keys(errors).length) {
-      const { values } = formik;
-      await register(
-        { email: values.email, firstName: values.firstName, lastName: values.lastName, password: values.password },
-        {
-          onError: (error: unknown) => {
-            const typedError = error as Error & { response: { data: { message: string } } };
-            if (typedError?.response?.data) {
-              setErrorMessage(typedError.response.data.message);
-            } else {
-              setErrorMessage('An unknown error occurred');
-            }
-          },
-        },
-      );
-    }
-  };
-
-  const formik = useFormik({
-    initialValues,
-    validationSchema: LoginSchema,
-    onSubmit: handleSubmit,
-  });
-
-  const onChange = (field: keyof FormFields) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    formik.setFieldValue(field, event.target.value);
-  };
+  const { errorMessage, formik, isLoading, onChange } = useHook();
 
   return (
     <form className="mx-auto w-full">

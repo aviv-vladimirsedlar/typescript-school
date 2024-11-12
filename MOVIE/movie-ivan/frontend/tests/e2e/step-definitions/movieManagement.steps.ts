@@ -12,7 +12,6 @@ Given(/^MOVIE - I am on the movies page$/, async () => {
 When(
   /^MOVIE - I create a movie with title "(.+)", description "(.+)", duration "(.+)", and year "(.+)"$/,
   async (title, description, duration, year) => {
-    console.log({ title, description, duration, year });
     await MovieListPage.openCreateModal();
     await MovieCreateEditModal.createMovie(title, description, duration, year);
   },

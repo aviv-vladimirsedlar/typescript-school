@@ -1,57 +1,12 @@
-import { useFormik } from 'formik';
-import React, { useState } from 'react';
-import * as Yup from 'yup';
+import React from 'react';
 
 import Button from '../../../common/components/Button';
 import Input from '../../../common/components/Input';
-import { useLogin } from '../../../common/hooks/useLogin';
 
-const LoginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Email is required'),
-  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-});
-
-interface FormFields {
-  email: string;
-  password: string;
-}
-
-const initialValues: FormFields = {
-  email: 'admin@aviv-group.com',
-  password: 'Test@#12345',
-};
+import { useHook } from './hook';
 
 export const LoginForm: React.FC = () => {
-  const { mutate: login, isLoading } = useLogin();
-
-  const [errorMessage, setErrorMessage] = useState<string>('');
-
-  const handleSubmit = async () => {
-    const { values } = formik;
-    await login(
-      { email: values.email, password: values.password },
-      {
-        onError: (error: unknown) => {
-          const typedError = error as Error & { response: { data: { message: string } } };
-          if (typedError?.response?.data) {
-            setErrorMessage(typedError.response.data.message);
-          } else {
-            setErrorMessage('An unknown error occurred');
-          }
-        },
-      },
-    );
-  };
-
-  const formik = useFormik({
-    initialValues,
-    validationSchema: LoginSchema,
-    onSubmit: handleSubmit,
-  });
-
-  const onChange = (field: keyof FormFields) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    formik.setFieldValue(field, event.target.value);
-  };
+  const { errorMessage, formik, isLoading, onChange } = useHook();
 
   return (
     <form className="mx-auto w-full max-w-sm">

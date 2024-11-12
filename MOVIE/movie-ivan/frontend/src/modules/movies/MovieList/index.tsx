@@ -1,31 +1,25 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import Button from '../../../common/components/Button';
 import { useCurrentUser } from '../../../common/hooks/useCurrentUser';
-import { useMovies } from '../../../common/hooks/useMovies';
 import { Movie } from '../../../common/types/movie.types';
 import { nameToSlug } from '../../../common/utils/string.util';
 import { MovieCreateEditModal } from '../MovieCreateEditModal';
 import { MovieDeleteConfirmModal } from '../MovieDeleteConfirmModal';
 
+import { useHook } from './hook';
+
 export const MovieList = () => {
-  const movieCreateEditRef = useRef<{ open: (movie?: Movie) => void }>(null);
-  const movieDeleteRef = useRef<{ open: (movie: Movie) => void }>(null);
-
-  const { data, refetch } = useMovies();
   const { currentUser, isAdmin, isAuthor } = useCurrentUser();
-
-  const onMovieCreate = () => {
-    movieCreateEditRef?.current?.open();
-  };
-
-  const handleMovieDelete = (movie: Movie) => () => {
-    movieDeleteRef?.current?.open(movie);
-  };
-
-  const handleMovieEdit = (movie: Movie) => () => {
-    movieCreateEditRef?.current?.open(movie);
-  };
+  const {
+    handleMovieDelete,
+    handleMovieEdit,
+    onMovieCreate,
+    movieCreateEditRef,
+    movieDeleteRef,
+    movies: data,
+    refetch,
+  } = useHook();
 
   const renderMovie = (movie: Movie) => {
     const isAbleToEdit = isAdmin || currentUser?.id === movie.owner.id;

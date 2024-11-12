@@ -34,15 +34,3 @@ class MovieListPage extends Page {
 }
 
 export default new MovieListPage();
-
-// When MOVIE - I create a movie with title "My New Movie", description "A great movie", duration "120", and year "2023"
-// Then MOVIE - I should see the movie titled "My New Movie" in the list
-
-// When MOVIE - I update the movie "My New Movie" with new title "My Updated Movie" and year "2024"
-// Then MOVIE - I should see the movie titled "My Updated Movie" in the list
-
-// When MOVIE - I delete the movie titled "My Updated Movie"
-// Then MOVIE - I should not see the movie titled "My Updated Movie" in the list
-
-// When LOGIN - I logout
-// Then LOGIN - I should see the login page
