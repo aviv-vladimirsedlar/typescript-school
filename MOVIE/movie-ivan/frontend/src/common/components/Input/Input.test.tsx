@@ -5,6 +5,13 @@ import '@testing-library/jest-dom';
 import Input from '.';
 
 describe('Input component', () => {
+  it('should match snapshot when initially rendered', () => {
+    const { asFragment } = render(
+      <Input data-testid="username" label="Username" name="username" value="" onChange={() => {}} />,
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
   it('renders the input with correct label', () => {
     render(<Input data-testid="username" label="Username" name="username" value="" onChange={() => {}} />);
     expect(screen.getByTestId(/username/i)).toBeInTheDocument();

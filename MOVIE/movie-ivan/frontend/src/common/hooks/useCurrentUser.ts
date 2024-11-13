@@ -3,8 +3,8 @@ import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
 import axiosInstance from '../../config/api';
-import { RootState } from '../../config/rootReducer';
 import { loginSuccess } from '../../config/slices/auth.slice';
+import { RootState } from '../../config/store';
 
 const getCurrentUser = async () => {
   const response = await axiosInstance.get('/users/me');

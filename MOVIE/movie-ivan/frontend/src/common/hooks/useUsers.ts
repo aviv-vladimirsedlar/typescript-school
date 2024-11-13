@@ -2,8 +2,8 @@ import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
 import axiosInstance from '../../config/api';
-import { RootState } from '../../config/rootReducer';
 import { updateUserList } from '../../config/slices/user.slice';
+import { RootState } from '../../config/store';
 
 const getUsers = async () => {
   const response = await axiosInstance.get('/users?limit=100');

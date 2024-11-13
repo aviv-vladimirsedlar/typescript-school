@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input component should match snapshot when initially rendered 1`] = `
+<DocumentFragment>
+  <div
+    class="mb-5"
+  >
+    <label
+      aria-labelledby="username"
+      class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+      for="username"
+    >
+      Username 
+    </label>
+    <input
+      class="block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900 border border-gray-200"
+      data-testid="username"
+      type="text"
+      value=""
+    />
+  </div>
+</DocumentFragment>
+`;

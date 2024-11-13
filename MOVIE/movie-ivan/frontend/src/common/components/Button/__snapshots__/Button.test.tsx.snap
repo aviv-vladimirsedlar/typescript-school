@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button component should match snapshot when initially rendered 1`] = `
+<DocumentFragment>
+  <button
+    class="rounded-lg bg-blue-500 p-2 px-6 font-semibold p-2 text-white"
+    data-testid="button"
+    type="button"
+  >
+    Click Me
+  </button>
+</DocumentFragment>
+`;

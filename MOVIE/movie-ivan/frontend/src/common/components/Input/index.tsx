@@ -34,6 +34,7 @@ const Input: React.FC<InputProps> = ({
       type={type}
       value={value}
     />
+    {!!error && <span className="pl-2 text-xs text-red-500">{error}</span>}
   </div>
 );
 

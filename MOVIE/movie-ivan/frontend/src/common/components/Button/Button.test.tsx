@@ -5,6 +5,15 @@ import '@testing-library/jest-dom';
 import Button from '.';
 
 describe('Button component', () => {
+  it('should match snapshot when initially rendered', () => {
+    const { asFragment } = render(
+      <Button data-testid="button" className="p-2" onClick={() => {}}>
+        Click Me
+      </Button>,
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
   it('renders the button with correct text', () => {
     render(
       <Button data-testid="button" onClick={() => {}}>

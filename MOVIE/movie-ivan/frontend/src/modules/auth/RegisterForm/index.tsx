@@ -12,6 +12,7 @@ export const RegisterForm: React.FC = () => {
     <form className="mx-auto w-full">
       <div className="grid grid-cols-2 gap-4">
         <Input
+          data-testid="first-name-input"
           error={formik.errors.firstName}
           label="First name"
           name="firstName"
@@ -20,6 +21,7 @@ export const RegisterForm: React.FC = () => {
           value={formik.values.firstName}
         />
         <Input
+          data-testid="last-name-input"
           error={formik.errors.lastName}
           label="Last name"
           name="lastName"
@@ -29,6 +31,7 @@ export const RegisterForm: React.FC = () => {
         />
       </div>
       <Input
+        data-testid="email-input"
         error={formik.errors.email}
         label="Your email"
         name="email"
@@ -37,6 +40,7 @@ export const RegisterForm: React.FC = () => {
         value={formik.values.email}
       />
       <Input
+        data-testid="password-input"
         error={formik.errors.password}
         label="Password"
         name="password"
@@ -45,6 +49,7 @@ export const RegisterForm: React.FC = () => {
         value={formik.values.password}
       />
       <Input
+        data-testid="confirm-password-input"
         error={formik.errors.passwordConfirm}
         label="Confirm password"
         name="passwordConfirm"
@@ -53,7 +58,7 @@ export const RegisterForm: React.FC = () => {
         value={formik.values.passwordConfirm}
       />
 
-      <Button className="w-full" onClick={formik.handleSubmit} type="submit">
+      <Button data-testid="btn-register" className="w-full" onClick={formik.handleSubmit} type="submit">
         {isLoading ? '...' : 'Submit'}
       </Button>
 

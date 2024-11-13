@@ -3,7 +3,7 @@ module.exports = {
   clearMocks: true,
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
   coveragePathIgnorePatterns: ['/node_modules/', 'src/setupTests.js'],
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageReporters: ['json', 'lcov', 'text', 'clover', 'text'],
   coverageThreshold: {
     global: {
       branches: 100,
@@ -12,6 +12,9 @@ module.exports = {
       statements: 100,
     },
   },
+  collectCoverage: true,
+  coverageDirectory: 'coverage', // Output directory for coverage reports
+
   displayName: {
     name: 'MY_APP',
     color: 'blue',

@@ -2,8 +2,8 @@ import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
 import axiosInstance from '../../config/api';
-import { RootState } from '../../config/rootReducer';
 import { updateMovieList } from '../../config/slices/movie.slice';
+import { RootState } from '../../config/store';
 
 const getMovies = async () => {
   const response = await axiosInstance.get('/movies?limit=100');

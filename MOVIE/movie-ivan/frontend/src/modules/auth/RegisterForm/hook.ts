@@ -15,10 +15,10 @@ const RegisterSchema = Yup.object().shape({
 });
 
 const initialValues: FormFields = {
-  email: 'ivanvukusic-ext@aviv-group.com',
-  password: 'Test@#12345',
-  passwordConfirm: 'Test@#12345',
-  firstName: 'Ivan',
+  email: '',
+  password: '',
+  passwordConfirm: '',
+  firstName: '',
   lastName: '',
 };
 

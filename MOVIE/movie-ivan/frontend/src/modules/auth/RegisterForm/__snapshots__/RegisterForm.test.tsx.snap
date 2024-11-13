@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RegisterForm should match snapshot when initially rendered 1`] = `
+<DocumentFragment>
+  <form
+    class="mx-auto w-full"
+  >
+    <div
+      class="grid grid-cols-2 gap-4"
+    >
+      <div
+        class="mb-5"
+      >
+        <label
+          aria-labelledby="firstName"
+          class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+          for="firstName"
+        >
+          First name 
+          <span>
+            *
+          </span>
+        </label>
+        <input
+          class="block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900 border border-gray-200"
+          data-testid="first-name-input"
+          required=""
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="mb-5"
+      >
+        <label
+          aria-labelledby="lastName"
+          class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+          for="lastName"
+        >
+          Last name 
+          <span>
+            *
+          </span>
+        </label>
+        <input
+          class="block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900 border border-gray-200"
+          data-testid="last-name-input"
+          required=""
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="mb-5"
+    >
+      <label
+        aria-labelledby="email"
+        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+        for="email"
+      >
+        Your email 
+        <span>
+          *
+        </span>
+      </label>
+      <input
+        class="block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900 border border-gray-200"
+        data-testid="email-input"
+        required=""
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      class="mb-5"
+    >
+      <label
+        aria-labelledby="password"
+        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+        for="password"
+      >
+        Password 
+        <span>
+          *
+        </span>
+      </label>
+      <input
+        class="block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900 border border-gray-200"
+        data-testid="password-input"
+        required=""
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      class="mb-5"
+    >
+      <label
+        aria-labelledby="passwordConfirm"
+        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+        for="passwordConfirm"
+      >
+        Confirm password 
+        <span>
+          *
+        </span>
+      </label>
+      <input
+        class="block w-full rounded-lg bg-gray-50/50 p-4 text-sm text-gray-900 border border-gray-200"
+        data-testid="confirm-password-input"
+        required=""
+        type="text"
+        value=""
+      />
+    </div>
+    <button
+      class="rounded-lg bg-blue-500 p-2 px-6 font-semibold w-full text-white"
+      data-testid="btn-register"
+      type="submit"
+    >
+      Submit
+    </button>
+  </form>
+</DocumentFragment>
+`;
