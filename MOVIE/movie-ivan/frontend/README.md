@@ -67,6 +67,10 @@ yarn install
 
 ```
 
+## Terraform Deployment
+
+For detailed instructions on deploying infrastructure with Terraform, see the [Terraform Deployment Guide](infra/README.md).
+
 ## Available Scripts
 
 In the project directory, you can run the following commands:

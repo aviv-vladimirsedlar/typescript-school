@@ -1,0 +1,4 @@
+# Ignore unnecessary files
+*.log
+.git/
+node_modules/.bin/

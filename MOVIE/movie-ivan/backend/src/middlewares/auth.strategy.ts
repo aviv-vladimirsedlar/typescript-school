@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 import fastifyPassport from '@fastify/passport';
 import fastifySecureSession from '@fastify/secure-session';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';

@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
-  }
+    "typeRoots": ["./node_modules/@types", "src/types"]
+  },
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/__tests__/**", "tests", "jest.setup.ts", "src_backup/*"]
 }

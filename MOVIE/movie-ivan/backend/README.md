@@ -178,3 +178,7 @@ yarn format
 ### Postman
 
 - You can find the collection for postman in the ./postman folder
+
+## Terraform Deployment
+
+For detailed instructions on deploying infrastructure with Terraform, see the [Terraform Deployment Guide](infra/README.md).

@@ -33,6 +33,7 @@ describe('Movie Routes', () => {
 
   beforeAll(async () => {
     app = buildServer();
+    await app.listen({ host: 'localhost', port: 3001 });
     await app.ready();
   });
 

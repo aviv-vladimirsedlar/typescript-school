@@ -32,6 +32,7 @@ const mockedMovie = {
 
 beforeAll(async () => {
   app = buildServer();
+  await app.listen({ host: 'localhost', port: 3000 });
   await app.ready();
 });
 

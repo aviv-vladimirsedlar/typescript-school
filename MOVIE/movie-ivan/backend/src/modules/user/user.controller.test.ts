@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { FastifyInstance } from 'fastify';
 import request from 'supertest';
 
@@ -52,6 +52,7 @@ const mockUserWithUserRole = {
 
 beforeAll(async () => {
   app = buildServer();
+  await app.listen({ host: 'localhost', port: 3002 });
   await app.ready();
 });
 
@@ -127,7 +128,7 @@ describe('User Controller', () => {
     it('should login and return a JWT token', async () => {
       jest.spyOn(authorizationModule, 'getAuthorizationStrategy').mockReturnValue('jwt');
 
-      const hash = await bcrypt.hash(password, SALT_ROUNDS);
+      const hash = await bcrypt.hashSync(password, SALT_ROUNDS);
       jest
         .spyOn(prisma.user, 'findUnique')
         .mockResolvedValueOnce({ ...mockUserWithUserRole, password: hash, roles: [mockUserRoleRoleUser] } as any);
@@ -152,7 +153,7 @@ describe('User Controller', () => {
     it('should fail on login - password missmatch', async () => {
       const body = { email: 'testuser@example.com', password: 'Test@#1234' };
 
-      const hash = await bcrypt.hash(password, SALT_ROUNDS);
+      const hash = await bcrypt.hashSync(password, SALT_ROUNDS);
       jest
         .spyOn(prisma.user, 'findUnique')
         .mockResolvedValueOnce({ ...mockUserWithUserRole, password: hash, roles: [mockUserRoleRoleUser] } as any);
@@ -166,7 +167,7 @@ describe('User Controller', () => {
     it('should login and return a cookie', async () => {
       jest.spyOn(authorizationModule, 'getAuthorizationStrategy').mockReturnValue('cookie');
 
-      const hash = await bcrypt.hash(password, SALT_ROUNDS);
+      const hash = await bcrypt.hashSync(password, SALT_ROUNDS);
       jest
         .spyOn(prisma.user, 'findUnique')
         .mockResolvedValueOnce({ ...mockUserWithUserRole, password: hash, roles: [mockUserRoleRoleUser] } as any);

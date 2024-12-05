@@ -1,1 +1,1 @@
-export const getAuthorizationStrategy = () => process.env.AUTHORIZATION_STRATEGY || 'cookie';
+export const getAuthorizationStrategy = () => process.env.AUTHORIZATION_STRATEGY || 'jwt';

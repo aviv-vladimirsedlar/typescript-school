@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+import awsLambdaFastify from '@fastify/aws-lambda';
 import cors from '@fastify/cors';
 import * as dotenv from 'dotenv';
 import Fastify from 'fastify';
@@ -34,29 +34,29 @@ export function buildServer() {
   return app;
 }
 
-// Function to start the server in production
+const app = buildServer();
+
 async function startServer() {
-  const app = buildServer();
+  logger.info('Starting server on ENV: ', process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'local') {
+    await app.listen({ host: HOST, port: parseInt(PORT) });
+    logger.info(`Server started successfully: http://${HOST}:${PORT}`);
+    logger.info(`Swagger:                     http://${HOST}:${PORT}/docs`);
 
-  await app.listen({ host: HOST, port: parseInt(PORT) });
-
-  const listeners = ['SIGINT', 'SIGTERM'];
-  listeners.forEach((signal) => {
-    process.on(signal, async () => {
-      await app.close();
-      process.exit(0);
+    const listeners = ['SIGINT', 'SIGTERM'];
+    listeners.forEach((signal) => {
+      process.on(signal, async () => {
+        await app.close();
+        process.exit(0);
+      });
     });
-  });
+  } else {
+    logger.info('Server start not required for AWS Lambda');
+  }
 }
 
-if (require.main === module) {
-  startServer()
-    .then(() => {
-      logger.info(`Server started successfully: http://${HOST}:${PORT}`);
-      logger.info(`Swagger:                     http://${HOST}:${PORT}/docs`);
-    })
-    .catch((err) => {
-      logger.error('Error starting server:', err);
-      process.exit(1);
-    });
-}
+startServer();
+
+const proxy = awsLambdaFastify(app);
+
+export const handler = proxy;

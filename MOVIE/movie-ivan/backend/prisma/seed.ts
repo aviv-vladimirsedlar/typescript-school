@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import prisma from '../src/config/prisma.db';
 const SALT_ROUNDS = 10;
@@ -40,7 +40,7 @@ async function main() {
     }
   }
 
-  const hashedPassword = await bcrypt.hash('Test@#12345', SALT_ROUNDS);
+  const hashedPassword = await bcrypt.hashSync('Test@#12345', SALT_ROUNDS);
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@aviv-group.com' },
     update: {},

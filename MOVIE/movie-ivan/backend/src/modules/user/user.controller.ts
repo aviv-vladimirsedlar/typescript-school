@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import jwt from 'jsonwebtoken';
 
@@ -25,7 +25,7 @@ export async function register(req: FastifyRequest<{ Body: RegisterUserInput }>,
     return reply.code(401).send({ message: 'User already exists with this email' });
   }
   try {
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const hash = await bcrypt.hashSync(password, SALT_ROUNDS);
 
     const role = await prisma.role.findFirst({ where: { name: 'user' } });
     if (!role) {
@@ -137,7 +137,7 @@ export const login = async (req: FastifyRequest<{ Body: LoginUserInput }>, reply
     return reply.code(404).send({ message: 'User not found' });
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compareSync(password, user.password);
   if (!user || !isMatch) {
     return reply.code(401).send({ message: 'Invalid email or password' });
   }
