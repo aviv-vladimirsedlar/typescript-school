@@ -1,3 +1,5 @@
+import { GeminiProvider } from '@gemini/core';
+import { AVIV_THEME } from '@gemini/tokens';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -7,6 +9,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
 import store, { persistor } from './config/store';
 import reportWebVitals from './reportWebVitals';
+
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -17,7 +20,9 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <GeminiProvider theme={AVIV_THEME}>
+            <App />
+          </GeminiProvider>
         </QueryClientProvider>
       </PersistGate>
     </Provider>

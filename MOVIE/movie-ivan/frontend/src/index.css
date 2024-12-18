@@ -1,7 +1,4 @@
 /* src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 body {
   margin: 0;
@@ -13,4 +10,13 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+input {
+  border-width: 0 !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }

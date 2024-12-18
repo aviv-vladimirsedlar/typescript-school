@@ -20,6 +20,7 @@ export const useHook = () => {
   const handleMovieEdit = (movie: Movie) => () => {
     movieCreateEditRef?.current?.open(movie);
   };
+
   return {
     handleMovieDelete,
     handleMovieEdit,

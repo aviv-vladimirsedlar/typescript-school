@@ -1,14 +1,15 @@
+import { Box } from '@gemini/core';
 import React from 'react';
 
 import { MainLayout } from '../../layouts/MainLayout';
 
 const Home: React.FC = () => (
   <MainLayout>
-    <div className="container py-20">
-      <h1 data-testid="home-message" className="text-2xl font-bold">
+    <Box margin="spacing.20">
+      <Box as="h1" testId="home-message" typography="typography.headline.20.bold">
         Welcome!
-      </h1>
-    </div>
+      </Box>
+    </Box>
   </MainLayout>
 );
 

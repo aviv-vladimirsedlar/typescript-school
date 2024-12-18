@@ -1,12 +1,21 @@
+import { GeminiProvider } from '@gemini/core';
+import { AVIV_THEME } from '@gemini/tokens';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
 import { useLogin } from '../../../common/hooks/useLogin';
+import { findInputAndChangeText } from '../../../common/utils/test.util';
 
 import { LoginForm } from '.';
 
 jest.mock('../../../common/hooks/useLogin');
+
+const renderComponent = () => (
+  <GeminiProvider theme={AVIV_THEME}>
+    <LoginForm />
+  </GeminiProvider>
+);
 
 const mockMutate = jest.fn();
 const mockUseLogin = useLogin as jest.MockedFunction<typeof useLogin>;
@@ -23,13 +32,13 @@ describe('LoginForm', () => {
   });
 
   it('should match snapshot when initially rendered', () => {
-    const { asFragment } = render(<LoginForm />);
+    const { asFragment } = render(renderComponent());
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('renders the login form', () => {
     mockMutate.mockImplementation((data, { onSuccess }) => onSuccess && onSuccess());
-    render(<LoginForm />);
+    render(renderComponent());
     expect(screen.getByTestId('email-input')).toBeInTheDocument();
     expect(screen.getByTestId('password-input')).toBeInTheDocument();
     expect(screen.getByTestId('btn-login')).toBeInTheDocument();
@@ -39,10 +48,10 @@ describe('LoginForm', () => {
     mockMutate.mockImplementation(
       (data, { onError }) => onError && onError({ response: { data: { message: 'Invalid credentials' } } }),
     );
-    render(<LoginForm />);
+    render(renderComponent());
 
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'wrong@aviv-group.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'wrongpassword' } });
+    findInputAndChangeText('email-input', 'admin@aviv-group.com');
+    findInputAndChangeText('password-input', 'Test@#12345');
     fireEvent.click(screen.getByTestId('btn-login'));
 
     await waitFor(() => {
@@ -52,11 +61,10 @@ describe('LoginForm', () => {
 
   it('does not show an error message on successful login', async () => {
     mockMutate.mockImplementation((data, { onSuccess }) => onSuccess && onSuccess());
-    render(<LoginForm />);
+    render(renderComponent());
 
-    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'admin@aviv-group.com' } });
-    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'Test@#12345' } });
-
+    findInputAndChangeText('email-input', 'admin@aviv-group.com');
+    findInputAndChangeText('password-input', 'Test@#12345');
     fireEvent.click(screen.getByTestId('btn-login'));
 
     await waitFor(() => {

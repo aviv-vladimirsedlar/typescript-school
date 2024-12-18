@@ -16,8 +16,8 @@ const loginRequest = async (data: LoginData) => {
 };
 
 export const useLogin = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return useMutation(loginRequest, {
     onSuccess: (data) => {

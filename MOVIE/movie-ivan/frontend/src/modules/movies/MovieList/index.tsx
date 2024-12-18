@@ -1,9 +1,9 @@
+import { Box } from '@gemini/core';
+import { Button, Card, ImageSlider } from '@gemini/ui';
 import React from 'react';
 
-import Button from '../../../common/components/Button';
 import { useCurrentUser } from '../../../common/hooks/useCurrentUser';
 import { Movie } from '../../../common/types/movie.types';
-import { nameToSlug } from '../../../common/utils/string.util';
 import { MovieCreateEditModal } from '../MovieCreateEditModal';
 import { MovieDeleteConfirmModal } from '../MovieDeleteConfirmModal';
 
@@ -11,82 +11,86 @@ import { useHook } from './hook';
 
 export const MovieList = () => {
   const { currentUser, isAdmin, isAuthor } = useCurrentUser();
-  const {
-    handleMovieDelete,
-    handleMovieEdit,
-    onMovieCreate,
-    movieCreateEditRef,
-    movieDeleteRef,
-    movies: data,
-    refetch,
-  } = useHook();
+  const { handleMovieDelete, handleMovieEdit, movieCreateEditRef, movieDeleteRef, movies: data, refetch } = useHook();
 
   const renderMovie = (movie: Movie) => {
     const isAbleToEdit = isAdmin || currentUser?.id === movie.owner.id;
     const isAbleToDelete = isAdmin || currentUser?.id === movie.owner.id;
     return (
-      <div
-        key={movie.id}
-        id={`movie-${nameToSlug(movie.title)}`}
-        className="col-span-1 flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow"
-      >
-        <div className="relative">
-          <div
-            className="h-[300px] w-full bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(https://placehold.co/600x400)` }}
+      <Box key={movie.id}>
+        <Card borderRadius="4">
+          <ImageSlider
+            accessibilityLabel="ImageSlider Card Story"
+            images={[
+              {
+                alt: 'image 4',
+                id: '057ad265-e74a-4571-b817-2805b254a285',
+                url: `https://picsum.photos/1000/1000/?image=212`,
+              },
+            ]}
+            ratio="3/2"
           />
-        </div>
-        <div className="flex h-full flex-grow flex-col justify-between p-5">
-          <div>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center">
-                <strong>Duration:</strong>
-                <span>{movie.duration}</span>
-              </div>
-              <div className="flex items-center">
-                <strong>Year:</strong>
-                <span>{movie.year}</span>
-              </div>
-            </div>
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{movie.title}</h5>
+          <Box marginTop="spacing.8">
+            <Box display="flex" gap="spacing.12">
+              <Box display="flex" gap="spacing.2" typography="typography.body.16.regular">
+                <Box typography="typography.body.16.bold">Duration:</Box>
+                <Box>{movie.duration}</Box>
+              </Box>
+              <Box display="flex" gap="spacing.2" typography="typography.body.16.regular">
+                <Box typography="typography.body.16.bold">Year:</Box>
+                <Box>{movie.year}</Box>
+              </Box>
+            </Box>
+            <Box as="h3" typography="typography.headline.20.bold" marginVertical="spacing.2">
+              {movie.title}
+            </Box>
             {!!movie.description && (
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                {movie.description?.substring(0, 100)}...
-              </p>
+              <Box as="p">
+                {movie.description?.substring(0, 100)}
+                {movie?.description?.length > 100 ? '...' : ''}
+              </Box>
             )}
-          </div>
-          <div className="flex justify-between">
-            <Button data-testid="movie-more-btn" className="py-2">
-              Read more
-            </Button>
-            <div className="flex gap-2">
+          </Box>
+
+          <Box display="flex" justifyContent="flex-end" marginTop="spacing.8">
+            <Box display="flex" gap="spacing.4">
               {isAbleToEdit && (
-                <Button data-testid="movie-edit-btn" className="py-2" onClick={handleMovieEdit(movie)}>
+                <Button testId="movie-edit-btn" onPress={handleMovieEdit(movie)} size="40" variant="primary">
                   Edit
                 </Button>
               )}
               {isAbleToDelete && (
-                <Button data-testid="movie-delete-btn" className="bg-red-500 py-2" onClick={handleMovieDelete(movie)}>
+                <Button testId="movie-delete-btn" onPress={handleMovieDelete(movie)} size="40" variant="danger">
                   Delete
                 </Button>
               )}
-            </div>
-          </div>
-        </div>
-      </div>
+            </Box>
+          </Box>
+        </Card>
+      </Box>
     );
   };
 
   return (
-    <div className="flex flex-col items-start py-12">
-      {isAuthor && (
-        <Button data-testid="movie-create-btn" className="bg-red-500 py-2" onClick={onMovieCreate}>
-          Create movie
-        </Button>
+    <Box display="flex" flexDirection="column" alignItems="flex-start" paddingVertical="spacing.36">
+      {!!data.length && (
+        <Box
+          display="grid"
+          marginVertical="spacing.24"
+          gap="spacing.16"
+          width="100%"
+          gridTemplateColumns={{
+            'breakpoint.sm': 'repeat(1, 1fr)',
+            'breakpoint.md': 'repeat(2, minmax(0, 1fr))',
+            'breakpoint.lg': 'repeat(3, minmax(0, 1fr))',
+            'breakpoint.xl': 'repeat(4, minmax(0, 1fr))',
+          }}
+        >
+          {data?.map(renderMovie)}
+        </Box>
       )}
-      <div className="grid w-full grid-cols-1 gap-5 pt-4 sm:grid-cols-2 lg:grid-cols-3">{data?.map(renderMovie)}</div>
-      <MovieCreateEditModal ref={movieCreateEditRef} refetch={refetch} />
+      {!!isAuthor && <MovieCreateEditModal ref={movieCreateEditRef} refetch={refetch} />}
       <MovieDeleteConfirmModal ref={movieDeleteRef} refetch={refetch} />
-    </div>
+    </Box>
   );
 };

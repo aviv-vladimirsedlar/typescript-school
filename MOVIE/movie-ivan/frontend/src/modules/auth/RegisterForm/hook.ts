@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 
 import { useRegister } from '../../../common/hooks/useRegister';
@@ -53,8 +53,8 @@ export const useHook = () => {
     onSubmit: handleSubmit,
   });
 
-  const onChange = (field: keyof FormFields) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    formik.setFieldValue(field, event.target.value);
+  const onChange = (field: keyof FormFields) => (value: string) => {
+    formik.setFieldValue(field, value);
   };
 
   return { errorMessage, formik, isLoading, onChange };

@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 
 import { useLogin } from '../../../common/hooks/useLogin';
@@ -23,7 +23,8 @@ export const useHook = () => {
 
   const handleSubmit = async () => {
     const { values } = formik;
-    await login(
+
+    login(
       { email: values.email, password: values.password },
       {
         onError: (error: unknown) => {
@@ -44,8 +45,8 @@ export const useHook = () => {
     onSubmit: handleSubmit,
   });
 
-  const onChange = (field: keyof FormFields) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    formik.setFieldValue(field, event.target.value);
+  const onChange = (field: keyof FormFields) => (value: string) => {
+    formik.setFieldValue(field, value);
   };
 
   return { errorMessage, formik, isLoading, onChange };

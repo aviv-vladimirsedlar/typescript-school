@@ -1,6 +1,5 @@
-import { Modal } from 'flowbite';
 import { useFormik } from 'formik';
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useCallback, useImperativeHandle, useState } from 'react';
 import * as Yup from 'yup';
 
 import { useMovieCreate } from '../../../common/hooks/useMovieCreate';
@@ -25,14 +24,13 @@ const ValidationSchema = Yup.object().shape({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
-  const modalRef = useRef<Modal | null>(null);
-
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [movieId, setMovieId] = useState<string>('');
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const handleSuccessCreate = () => {
     refetch();
-    modalRef?.current?.hide();
+    toggleModal();
   };
 
   const { mutate: createMovie } = useMovieCreate();
@@ -42,6 +40,7 @@ export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
     const { values } = formik;
 
     const mutate = movieId ? updateMovie : createMovie;
+    console.log('movieId', movieId);
     await mutate(
       { movieId, data: { ...values, year: parseInt(values.year), duration: parseInt(values.duration) } },
       {
@@ -64,8 +63,16 @@ export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
     onSubmit: handleSubmit,
   });
 
-  const onChange = (field: keyof FormFields) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    formik.setFieldValue(field, event.target.value);
+  const toggleModal = useCallback(() => {
+    if (isOpen) {
+      formik.resetForm();
+      setMovieId('');
+    }
+    setIsOpen((prev) => !prev);
+  }, [formik, isOpen]);
+
+  const onChange = (field: keyof FormFields) => (value: string) => {
+    formik.setFieldValue(field, value);
   };
 
   const handleOpen = React.useCallback(
@@ -82,22 +89,18 @@ export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
         formik.setValues(initialValues);
         setMovieId('');
       }
-      modalRef?.current?.show();
+      toggleModal();
     },
-    [formik, setMovieId],
+    [formik, setMovieId, toggleModal],
   );
 
-  const handleClose = () => {
-    modalRef?.current?.hide();
-  };
+  const handleClose = useCallback(() => {
+    formik.resetForm();
+    setMovieId('');
+    ref?.current?.hide();
+  }, [formik, ref]);
 
-  useEffect(() => {
-    const element = document.getElementById('movie-create-edit-modal');
-    const modal = new Modal(element, {}, {});
-    modalRef.current = modal;
-  }, []);
+  useImperativeHandle(ref, () => ({ open: handleOpen, close: handleClose }), [handleOpen, handleClose]);
 
-  useImperativeHandle(ref, () => ({ open: handleOpen, close: handleClose }), [handleOpen]);
-
-  return { errorMessage, formik, handleClose, modalRef, movieId, onChange };
+  return { errorMessage, formik, handleClose, handleSubmit, isOpen, movieId, onChange, toggleModal };
 };

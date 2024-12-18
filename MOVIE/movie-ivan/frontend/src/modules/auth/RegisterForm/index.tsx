@@ -1,7 +1,6 @@
+import { Box } from '@gemini/core';
+import { Button, TextField } from '@gemini/ui';
 import React from 'react';
-
-import Button from '../../../common/components/Button';
-import Input from '../../../common/components/Input';
 
 import { useHook } from './hook';
 
@@ -9,63 +8,87 @@ export const RegisterForm: React.FC = () => {
   const { errorMessage, formik, isLoading, onChange } = useHook();
 
   return (
-    <form className="mx-auto w-full">
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          data-testid="first-name-input"
-          error={formik.errors.firstName}
-          label="First name"
-          name="firstName"
-          onChange={onChange('firstName')}
-          required
-          value={formik.values.firstName}
+    <form className="mx-auto w-full max-w-2xl">
+      <Box width="100%" marginBottom="spacing.12">
+        <Box
+          display="grid"
+          marginVertical="spacing.24"
+          gap="spacing.16"
+          width="100%"
+          gridTemplateColumns={{
+            'breakpoint.sm': 'repeat(1, 1fr)',
+            'breakpoint.lg': 'repeat(2, minmax(0, 1fr))',
+          }}
+        >
+          <TextField
+            testId="first-name-input"
+            label="First name"
+            error={formik.errors.firstName}
+            value={formik.values.firstName}
+            isOptional={false}
+            onChange={onChange('firstName')}
+          />
+          <TextField
+            testId="last-name-input"
+            label="Last name"
+            error={formik.errors.lastName}
+            value={formik.values.lastName}
+            isOptional={false}
+            onChange={onChange('lastName')}
+          />
+        </Box>
+      </Box>
+      <Box width="100%" marginBottom="spacing.12">
+        <TextField
+          testId="email-input"
+          label="Your email"
+          error={formik.errors.email}
+          value={formik.values.email}
+          isOptional={false}
+          onChange={onChange('email')}
         />
-        <Input
-          data-testid="last-name-input"
-          error={formik.errors.lastName}
-          label="Last name"
-          name="lastName"
-          onChange={onChange('lastName')}
-          required
-          value={formik.values.lastName}
+      </Box>
+      <Box width="100%" marginBottom="spacing.12">
+        <TextField
+          testId="password-input"
+          label="Password"
+          error={formik.errors.password}
+          value={formik.values.password}
+          isOptional={false}
+          onChange={onChange('password')}
         />
-      </div>
-      <Input
-        data-testid="email-input"
-        error={formik.errors.email}
-        label="Your email"
-        name="email"
-        onChange={onChange('email')}
-        required
-        value={formik.values.email}
-      />
-      <Input
-        data-testid="password-input"
-        error={formik.errors.password}
-        label="Password"
-        name="password"
-        onChange={onChange('password')}
-        required
-        value={formik.values.password}
-      />
-      <Input
-        data-testid="confirm-password-input"
-        error={formik.errors.passwordConfirm}
-        label="Confirm password"
-        name="passwordConfirm"
-        onChange={onChange('passwordConfirm')}
-        required
-        value={formik.values.passwordConfirm}
-      />
+      </Box>
+      <Box width="100%" marginBottom="spacing.12">
+        <TextField
+          testId="confirm-password-input"
+          label="Confirm password"
+          error={formik.errors.passwordConfirm}
+          value={formik.values.passwordConfirm}
+          isOptional={false}
+          onChange={onChange('passwordConfirm')}
+        />
+      </Box>
 
-      <Button data-testid="btn-register" className="w-full" onClick={formik.handleSubmit} type="submit">
-        {isLoading ? '...' : 'Submit'}
+      <Button testId="btn-register" isLoading={isLoading} onPress={() => formik.handleSubmit()} type="button" size="48">
+        Submit
       </Button>
 
       {!!errorMessage && (
-        <div className="mt-4 rounded-lg border border-red-300 bg-red-100/50 p-4 py-2 text-sm text-red-700">
+        <Box
+          testId="register-error-message"
+          display="flex"
+          gap="spacing.20"
+          backgroundColor="color.border.status.error.default"
+          marginTop="spacing.16"
+          typography="typography.body.14.bold"
+          color="color.content.constant.white"
+          textAlign="left"
+          padding="spacing.12"
+          paddingLeft="spacing.16"
+          zIndex="zIndex.4"
+        >
           {errorMessage}
-        </div>
+        </Box>
       )}
     </form>
   );

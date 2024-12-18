@@ -1,3 +1,4 @@
+import { Box } from '@gemini/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -8,12 +9,19 @@ const Register: React.FC = () => (
   <AuthLayout>
     <RegisterForm />
 
-    <div className="mt-10 flex flex-col items-center justify-center text-sm opacity-70">
-      <div>Already have an account?</div>
-      <Link className="text-sm font-semibold" to="/auth/login">
-        Go to Login
-      </Link>
-    </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      gap="spacing.4"
+      marginTop="spacing.32"
+      marginBottom="spacing.8"
+      typography="typography.body.14.regular"
+    >
+      <Box>Already have an account?</Box>
+      <Box typography="typography.body.14.bold">
+        <Link to="/auth/login">Go to Login</Link>
+      </Box>
+    </Box>
   </AuthLayout>
 );
 

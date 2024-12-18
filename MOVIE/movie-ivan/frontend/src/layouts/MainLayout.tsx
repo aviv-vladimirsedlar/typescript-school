@@ -1,3 +1,4 @@
+import { Box } from '@gemini/core';
 import React, { ReactNode } from 'react';
 
 import { Header } from './Header';
@@ -6,7 +7,17 @@ export const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       <Header />
-      <div className="container mx-auto">{children}</div>
+      <Box
+        marginHorizontal="auto"
+        maxWidth={{
+          'breakpoint.base': '100%',
+          'breakpoint.md': '90%',
+          'breakpoint.lg': '1340px',
+          'breakpoint.xl': '1640px',
+        }}
+      >
+        {children}
+      </Box>
     </>
   );
 };

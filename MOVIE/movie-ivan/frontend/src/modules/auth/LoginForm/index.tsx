@@ -1,7 +1,6 @@
+import { Box } from '@gemini/core';
+import { Button, TextField } from '@gemini/ui';
 import React from 'react';
-
-import Button from '../../../common/components/Button';
-import Input from '../../../common/components/Input';
 
 import { useHook } from './hook';
 
@@ -9,36 +8,51 @@ export const LoginForm: React.FC = () => {
   const { errorMessage, formik, isLoading, onChange } = useHook();
 
   return (
-    <form className="mx-auto w-full max-w-sm">
-      <Input
-        data-testid="email-input"
-        label="Your email"
-        name="email"
-        onChange={onChange('email')}
-        required
-        value={formik.values.email}
-      />
-      <Input
-        data-testid="password-input"
-        label="Your password"
-        name="password"
-        onChange={onChange('password')}
-        required
-        type="password"
-        value={formik.values.password}
-      />
+    <form className="mx-auto w-full max-w-2xl">
+      <Box width="100%" marginBottom="spacing.12">
+        <TextField
+          testId="email-input"
+          label="Your email"
+          isOptional={false}
+          onChange={onChange('email')}
+          error={formik.errors.email}
+          value={formik.values.email}
+        />
+      </Box>
 
-      <Button data-testid="btn-login" className="w-full" onClick={formik.handleSubmit} type="submit">
-        {isLoading ? '...' : 'Submit'}
+      <Box width="100%" marginBottom="spacing.20">
+        <TextField
+          testId="password-input"
+          inputMode="none"
+          name="password"
+          label="Your password"
+          isOptional={false}
+          onChange={onChange('password')}
+          error={formik.errors.password}
+          value={formik.values.password}
+        />
+      </Box>
+
+      <Button testId="btn-login" isLoading={isLoading} onPress={() => formik.handleSubmit()} type="button" size="48">
+        Submit
       </Button>
 
       {!!errorMessage && (
-        <div
-          data-testid="login-error-message"
-          className="mt-4 rounded-lg border border-red-300 bg-red-100/50 p-4 py-2 text-sm text-red-700"
+        <Box
+          testId="login-error-message"
+          display="flex"
+          gap="spacing.20"
+          backgroundColor="color.border.status.error.default"
+          marginTop="spacing.16"
+          typography="typography.body.14.bold"
+          color="color.content.constant.white"
+          textAlign="left"
+          padding="spacing.12"
+          paddingLeft="spacing.16"
+          zIndex="zIndex.4"
         >
           {errorMessage}
-        </div>
+        </Box>
       )}
     </form>
   );

@@ -1,6 +1,7 @@
+import { Box } from '@gemini/core';
+import { Button } from '@gemini/ui';
 import React from 'react';
 
-import Button from '../../../common/components/Button';
 import { useCurrentUser } from '../../../common/hooks/useCurrentUser';
 
 import { useHook } from './hook';
@@ -10,54 +11,69 @@ export const UserList = () => {
   const { isAdmin } = useCurrentUser();
 
   if (isLoadingList) {
-    return <div className="container p-10 text-center">Loading...</div>;
+    return (
+      <Box textAlign="center" padding="spacing.32">
+        Loading...
+      </Box>
+    );
   }
   if (!data.length) {
-    return <div className="container p-10 text-center">No data</div>;
+    return (
+      <Box textAlign="center" padding="spacing.32">
+        No data
+      </Box>
+    );
   }
   return (
-    <div className="relative overflow-x-auto py-12">
-      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
-        <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" className="px-6 py-3">
+    <Box overflowX="auto" paddingVertical="spacing.20">
+      <Box as="table" width="100%" textAlign="left">
+        <Box as="thead" typography="typography.body.14.bold">
+          <Box as="tr">
+            <Box as="th" scope="col" padding="spacing.12">
               Name
-            </th>
-            <th scope="col" className="px-6 py-3">
+            </Box>
+            <Box as="th" scope="col" padding="spacing.12">
               Email
-            </th>
-            <th scope="col" className="px-6 py-3">
+            </Box>
+            <Box as="th" scope="col" padding="spacing.12">
               Roles
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((user) => {
+            </Box>
+            <Box />
+          </Box>
+        </Box>
+        <Box as="tbody">
+          {data.map((user, index) => {
             const roles = user.roles?.map((userRole) => userRole.role.name).join(', ');
             const isAuthor = user.roles?.some((userRole) => userRole.role.name === 'author');
             return (
-              <tr
+              <Box
+                as="tr"
                 key={user.id}
-                className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800"
+                borderBottomColor="color.background.light"
+                borderBottomWidth="borderWidth.1"
+                backgroundColor={index % 2 === 0 ? 'color.background.subdued' : 'color.background.constant.white'}
               >
-                <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                <Box as="td" scope="row" padding="spacing.12" whiteSpace="nowrap">
                   {user.firstName} {user.lastName}
-                </th>
-                <td className="px-6 py-4">{user.email}</td>
-                <td className="px-6 py-4 capitalize">{roles}</td>
-                <td className="px-2 py-4">
+                </Box>
+                <Box as="td" scope="row" padding="spacing.12" whiteSpace="nowrap">
+                  {user.email}
+                </Box>
+                <Box as="td" scope="row" padding="spacing.12" whiteSpace="nowrap">
+                  {roles}
+                </Box>
+                <Box as="td" scope="row" padding="spacing.12" maxWidth="sizing.60">
                   {isAdmin && !isAuthor && (
-                    <Button className="w-[120px] px-2 py-1 font-bold" onClick={handleAssignAuthor(user.id)}>
+                    <Button size="32" onPress={handleAssignAuthor(user.id)}>
                       {assignUserId === user.id ? '...' : 'Assign author '}
                     </Button>
                   )}
-                </td>
-              </tr>
+                </Box>
+              </Box>
             );
           })}
-        </tbody>
-      </table>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };

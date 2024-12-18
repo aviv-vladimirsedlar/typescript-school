@@ -1,3 +1,4 @@
+import { Box } from '@gemini/core';
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -13,14 +14,17 @@ const App: React.FC = () => {
   const { isLoading } = useCurrentUser();
 
   if (isLoading) {
-    return <div className="align-center flex h-screen w-screen justify-center">Loading...</div>;
+    return (
+      <Box display="flex" justifyContent="center" height="100%" width="100%" textAlign="center" padding="spacing.32">
+        Loading...
+      </Box>
+    );
   }
   return (
     <Router>
       <Routes>
         <Route element={<ProtectedRoute type="protected" />}>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/users" element={<Users />} />
         </Route>

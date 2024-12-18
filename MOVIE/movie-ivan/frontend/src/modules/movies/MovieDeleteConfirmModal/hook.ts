@@ -1,5 +1,4 @@
-import { Modal } from 'flowbite';
-import { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useImperativeHandle, useState, useCallback } from 'react';
 
 import { useMovieDelete } from '../../../common/hooks/useMovieDelete';
 import { Movie } from '../../../common/types/movie.types';
@@ -8,40 +7,44 @@ import { Props } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
-  const modalRef = useRef<Modal | null>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [movieDelete, setMovieDelete] = useState<Movie | null>(null);
 
   const handleSuccess = () => {
-    modalRef?.current?.hide();
     refetch();
+    toggleModal();
   };
 
   const mutation = useMovieDelete({ onSuccess: handleSuccess });
 
   const handleMovieDeleteConfirm = async () => {
     if (movieDelete) {
-      await mutation.mutate(movieDelete.id);
+      setIsLoading(true);
+      try {
+        await mutation.mutate(movieDelete.id);
+      } catch (error) {
+        console.error(error);
+      }
+      setIsLoading(false);
     }
   };
 
   const handleMovieDeleteCancel = () => {
     setMovieDelete(null);
-    modalRef?.current?.hide();
+    toggleModal();
   };
 
-  const handleOpen = (movie: Movie) => {
+  const handleOpen = useCallback((movie: Movie) => {
     setMovieDelete(movie);
-    modalRef?.current?.show();
-  };
-
-  useEffect(() => {
-    const element = document.getElementById('movie-delete-confirm-modal');
-    const modal = new Modal(element, {}, {});
-    modalRef.current = modal;
+    toggleModal();
   }, []);
 
-  useImperativeHandle(ref, () => ({ open: handleOpen }), []);
+  const toggleModal = () => {
+    setIsOpen((prev) => !prev);
+  };
 
-  return { handleMovieDeleteCancel, handleMovieDeleteConfirm, modalRef, movieDelete };
+  useImperativeHandle(ref, () => ({ open: handleOpen }), [handleOpen]);
+
+  return { handleMovieDeleteCancel, handleMovieDeleteConfirm, isLoading, movieDelete, isOpen, toggleModal };
 };
