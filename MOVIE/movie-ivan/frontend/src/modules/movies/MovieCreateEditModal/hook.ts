@@ -28,8 +28,8 @@ export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
   const [movieId, setMovieId] = useState<string>('');
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const handleSuccessCreate = () => {
-    refetch();
+  const handleSuccessCreate = async () => {
+    await refetch();
     toggleModal();
   };
 
@@ -40,7 +40,6 @@ export const useHook = ({ ref, refetch }: Props & { ref: any }) => {
     const { values } = formik;
 
     const mutate = movieId ? updateMovie : createMovie;
-    console.log('movieId', movieId);
     await mutate(
       { movieId, data: { ...values, year: parseInt(values.year), duration: parseInt(values.duration) } },
       {

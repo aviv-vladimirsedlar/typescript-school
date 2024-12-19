@@ -1,3 +1,4 @@
+import { Box } from '@gemini/core';
 import { Modal } from '@gemini/ui';
 import React, { forwardRef } from 'react';
 
@@ -16,6 +17,7 @@ export const MovieDeleteConfirmModal = forwardRef(({ refetch }: Props, ref) => {
     <Modal
       footerEndButtonProps={{
         children: 'Confirm',
+        testId: 'movie-delete-confirm-btn',
         isLoading: false,
         onPress: handleMovieDeleteConfirm,
       }}
@@ -25,17 +27,15 @@ export const MovieDeleteConfirmModal = forwardRef(({ refetch }: Props, ref) => {
         onPress: handleMovieDeleteCancel,
       }}
       isOpen={isOpen}
-      testId="filter-leads-modal"
       title="Delete movie"
       trigger={renderTrigger}
       onOpenChange={() => {
         toggleModal();
       }}
     >
-      {/* {renderForm()} */}
-      <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+      <Box as="p">
         Are you sure you want to delete <strong>"{movieDelete?.title}"?</strong>
-      </h3>
+      </Box>
     </Modal>
   );
 });

@@ -36,11 +36,11 @@ export const Header: React.FC = () => {
         marginHorizontal="auto"
         maxWidth={{
           'breakpoint.base': '100%',
-          'breakpoint.md': '90%',
           'breakpoint.lg': '1340px',
           'breakpoint.xl': '1640px',
         }}
-        padding="spacing.16"
+        paddingVertical="spacing.16"
+        paddingHorizontal="spacing.16"
       >
         <Link to="/">
           <AVIVLogo size="sizing.32" variant="colored" />

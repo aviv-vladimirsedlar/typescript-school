@@ -4,6 +4,7 @@ import React from 'react';
 
 import { useCurrentUser } from '../../../common/hooks/useCurrentUser';
 import { Movie } from '../../../common/types/movie.types';
+import { nameToSlug } from '../../../common/utils/string.util';
 import { MovieCreateEditModal } from '../MovieCreateEditModal';
 import { MovieDeleteConfirmModal } from '../MovieDeleteConfirmModal';
 
@@ -18,7 +19,7 @@ export const MovieList = () => {
     const isAbleToDelete = isAdmin || currentUser?.id === movie.owner.id;
     return (
       <Box key={movie.id}>
-        <Card borderRadius="4">
+        <Card testId={`movie-${nameToSlug(movie.title)}`} borderRadius="4">
           <ImageSlider
             accessibilityLabel="ImageSlider Card Story"
             images={[
@@ -76,7 +77,7 @@ export const MovieList = () => {
       {!!data.length && (
         <Box
           display="grid"
-          marginVertical="spacing.24"
+          marginTop="spacing.24"
           gap="spacing.16"
           width="100%"
           gridTemplateColumns={{

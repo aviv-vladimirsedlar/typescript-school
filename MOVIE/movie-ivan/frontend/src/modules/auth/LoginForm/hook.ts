@@ -12,8 +12,8 @@ const LoginSchema = Yup.object().shape({
 });
 
 const initialValues: FormFields = {
-  email: 'admin@aviv-group.com',
-  password: 'Test@#12345',
+  email: '',
+  password: '',
 };
 
 export const useHook = () => {

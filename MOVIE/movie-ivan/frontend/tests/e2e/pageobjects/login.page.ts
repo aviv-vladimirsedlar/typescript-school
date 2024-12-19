@@ -4,11 +4,11 @@ import Page from './page';
 
 class LoginPage extends Page {
   public get inputEmail() {
-    return $('[data-testid="email-input"]');
+    return $('[data-testid="email-input"] input');
   }
 
   public get inputPassword() {
-    return $('[data-testid="password-input"]');
+    return $('[data-testid="password-input"] input');
   }
 
   public get btnLogin() {

@@ -11,10 +11,10 @@ export const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         marginHorizontal="auto"
         maxWidth={{
           'breakpoint.base': '100%',
-          'breakpoint.md': '90%',
           'breakpoint.lg': '1340px',
           'breakpoint.xl': '1640px',
         }}
+        paddingHorizontal="spacing.20"
       >
         {children}
       </Box>

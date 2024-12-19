@@ -6,7 +6,7 @@ import Page from './page';
 
 class MovieListPage extends Page {
   public async openCreateModal() {
-    await $('[data-testid="movie-create-btn"]').click();
+    await $('[data-testid="movie-create-edit-modal-trigger"]').click();
   }
 
   public async openEditModalForMovie(title: string) {
@@ -15,11 +15,11 @@ class MovieListPage extends Page {
   }
 
   public async openDeleteModalForMovie(title: string) {
-    await $(`#movie-${nameToSlug(title)} [data-testid="movie-delete-btn"]`).click();
+    await $(`[data-testid="movie-${nameToSlug(title)}"] [data-testid="movie-delete-btn"]`).click();
   }
 
   public async isMoviePresent(title: string) {
-    const movie = await $(`#movie-${nameToSlug(title)} h5`);
+    const movie = await $(`[data-testid="movie-${nameToSlug(title)}"] h3`);
     const titleFound = await movie.getText();
     return titleFound;
   }

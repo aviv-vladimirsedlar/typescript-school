@@ -36,6 +36,7 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
         </Box>
         <Box marginTop="spacing.8">
           <TextField
+            testId="year-input"
             name="year"
             label="Year"
             isOptional={false}
@@ -75,7 +76,13 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
   };
 
   const renderTrigger = () => (
-    <Button testId="movie-create-edit-modal-trigger" onPress={toggleModal} type="button" size="48">
+    <Button
+      marginTop="spacing.24"
+      testId="movie-create-edit-modal-trigger"
+      onPress={toggleModal}
+      type="button"
+      size="48"
+    >
       Create movie
     </Button>
   );
@@ -85,13 +92,16 @@ export const MovieCreateEditModal = forwardRef(function CreateEditComponent({ re
       footerEndButtonProps={{
         children: 'Save',
         form: 'filter-form',
+        isDisabled: !formik.values.title || !formik.values.duration || !formik.values.year,
         isLoading: false,
+        testId: 'create-edit-movie-confirm-btn',
         onPress: handleSubmit,
       }}
       footerStartButtonProps={{
         children: 'Cancel',
         form: 'filter-form',
         isLoading: false,
+        testId: 'create-edit-movie-cancel-btn',
         onPress: toggleModal,
       }}
       isOpen={isOpen}
