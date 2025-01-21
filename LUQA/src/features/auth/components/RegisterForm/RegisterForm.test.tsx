@@ -10,8 +10,8 @@ import {
 import React from "react";
 
 import "@testing-library/jest-dom";
-import { findInputAndChangeText } from "../../../common/utils/test.util";
-import { useRegister } from "../hooks/useRegister";
+import { findInputAndChangeText } from "../../../../common/utils/test.util";
+import { useRegister } from "./hooks/useRegister";
 
 import { RegisterForm } from "./RegisterForm";
 

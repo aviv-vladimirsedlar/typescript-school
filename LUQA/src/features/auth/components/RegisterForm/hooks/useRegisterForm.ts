@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
-import { useRegister } from "../../hooks/useRegister"; // Assuming a registration mutation hook
+import { useRegister } from "./useRegister";
 
 // Define Zod schema
 const registerSchema = z

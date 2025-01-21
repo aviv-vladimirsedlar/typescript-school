@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 
 import axiosInstance from "../../../config/api";
@@ -30,16 +30,22 @@ export const useCurrentUser = () => {
     [currentUser]
   );
 
-  const { isLoading } = useQuery("currentUser", getCurrentUser, {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["currentUser"], // Use array syntax for query keys
+    queryFn: async () => {
+      const user = await getCurrentUser();
+      // Handle onSuccess logic here
+      dispatch(loginSuccess({ user }));
+      return user;
+    },
     retry: false,
     enabled: isAuthenticated,
-    onSuccess: (res) => {
-      dispatch(loginSuccess({ user: res }));
-    },
-    onError: (error) => {
-      console.error("Login error:", error);
-    },
   });
 
-  return { currentUser, isAdmin, isAuthor, isLoading };
+  // Handle errors directly
+  if (error) {
+    console.error("Login error:", error);
+  }
+
+  return { currentUser: data, isAdmin, isAuthor, isLoading };
 };

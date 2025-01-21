@@ -2,8 +2,8 @@ import { Box } from "@gemini/core";
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { AuthLayout } from "../features/auth/AuthLayout/AuthLayout";
-import { RegisterForm } from "../features/auth/RegisterForm/RegisterForm";
+import { AuthLayout } from "../features/auth/components/AuthLayout/AuthLayout";
+import { RegisterForm } from "../features/auth/components/RegisterForm/RegisterForm";
 
 const RegisterPage: React.FC = () => (
   <AuthLayout>

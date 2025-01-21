@@ -2,8 +2,8 @@ import { Box } from "@gemini/core";
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { AuthLayout } from "../features/auth/AuthLayout/AuthLayout";
-import { LoginForm } from "../features/auth/LoginForm/LoginForm";
+import { AuthLayout } from "../features/auth/components/AuthLayout/AuthLayout";
+import { LoginForm } from "../features/auth/components/LoginForm/LoginForm";
 
 const LoginPage: React.FC = () => (
   <AuthLayout>

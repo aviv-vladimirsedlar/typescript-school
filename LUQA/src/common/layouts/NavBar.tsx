@@ -8,12 +8,11 @@ import { useCurrentUser } from "../../features/auth/hooks/useCurrentUser";
 import { useLogout } from "../../features/auth/hooks/useLogout";
 
 export const Header: React.FC = () => {
-  const { mutate: logout, isLoading } = useLogout();
-  // const { user: currentUser } = useAuth();
+  const { mutate: logout, isPending } = useLogout(); // Use isPending for v5
   const { currentUser, isAdmin } = useCurrentUser();
 
   const handleLogout = () => {
-    logout();
+    logout(undefined); // Pass undefined explicitly
   };
 
   const renderLogoutButton = () => {
@@ -25,7 +24,7 @@ export const Header: React.FC = () => {
           onPress={handleLogout}
           variant="secondary"
         >
-          {isLoading ? "..." : "Logout"}
+          {isPending ? "..." : "Logout"}
         </Button>
       );
     }

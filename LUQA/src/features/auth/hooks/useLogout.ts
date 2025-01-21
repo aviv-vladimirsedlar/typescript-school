@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -11,18 +11,22 @@ const logoutRequest = async () => {
 };
 
 export const useLogout = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  return useMutation(logoutRequest, {
+  const mutation = useMutation({
+    mutationFn: logoutRequest,
     onSuccess: () => {
       dispatch(logoutSuccess());
       setTimeout(() => {
         navigate("/auth/login");
       }, 1000);
     },
-    onError: (error) => {
-      console.error("Login error:", error);
-    },
   });
+
+  return {
+    mutate: mutation.mutate,
+    isPending: mutation.isPending, // Correct loading state for v5
+    error: mutation.error, // Optional error handling
+  };
 };

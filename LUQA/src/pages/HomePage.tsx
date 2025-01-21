@@ -1,6 +1,6 @@
 import { Box } from "@gemini/core";
 import { AVIVLogo } from "@gemini/logos";
-import { TextField, Button, Link } from "@gemini/ui";
+import { TextField, Button, Link, Badge } from "@gemini/ui";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -20,6 +20,7 @@ const LoginForm: React.FC = () => {
       backgroundSize="cover"
       backgroundPosition="center"
     >
+      <Badge label="beta">test</Badge>
       <Box
         onSubmit={handleSubmit(onSubmit)}
         width="360px"
