@@ -12,3 +12,8 @@ export interface User {
   email: string;
   roles?: UserRole[];
 }
+
+export interface RoleData {
+  userId: string;
+  roles: string[];
+}

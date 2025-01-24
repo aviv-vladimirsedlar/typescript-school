@@ -6,7 +6,7 @@ import React from "react";
 import "@testing-library/jest-dom";
 
 import { findInputAndChangeText } from "../../../../common/utils/test.util";
-import { useLogin } from "./hooks/useLogin";
+import { useLogin } from "../../hooks/useLogin";
 
 import { LoginForm } from "./LoginForm";
 

@@ -1,105 +1,45 @@
-import { Box } from "@gemini/core";
-import { AVIVLogo } from "@gemini/logos";
-import { TextField, Button, Link, Badge } from "@gemini/ui";
+import { ProgressBar, Rating } from "@gemini/ui";
 import React from "react";
-import { Controller, useForm } from "react-hook-form";
 
-const LoginForm: React.FC = () => {
-  const { control, handleSubmit } = useForm();
+import { MainLayout } from "../common/layouts/MainLayout";
+import { PerformanceCard } from "../features/dashboard/components/PerformanceCard/PerformanceCard";
+import useDashboardStats from "../features/dashboard/hooks/useDashboardStats";
 
-  const onSubmit = () => {};
+const HomePage: React.FC = () => {
+  const { data: stats, isLoading } = useDashboardStats();
 
   return (
-    <Box
-      as="main"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-      backgroundImage="url('/path-to-background.jpg')" // Placeholder background
-      backgroundSize="cover"
-      backgroundPosition="center"
-    >
-      <Badge label="beta">test</Badge>
-      <Box
-        onSubmit={handleSubmit(onSubmit)}
-        width="360px"
-        padding="spacing.12"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
+    <MainLayout>
+      <PerformanceCard
+        time={stats?.time || "N/A"}
+        productionStatus={stats?.productionStatus || "N/A"}
+        ca={stats?.ca || 0}
+        eval={stats?.eval || 0}
+        progressValue={stats?.progressValue || 0}
+        progressMaxValue={100}
+        progressType={"percentage"}
+        progressVariant={"default"}
+        progressSize={"64"}
+        borderRadius={"8"}
+        backgroundVariant={"light"}
+        isLoading={isLoading}
       >
-        {/* Logos Component */}
-
-        <AVIVLogo
-          variant="colored"
-          size="sizing.40"
-          marginVertical="spacing.8"
-        />
-
-        {/* Title */}
-        <Box as="h2" textAlign="center" marginBottom="spacing.8">
-          Log in to your account
-        </Box>
-
-        {/* Email Field */}
-        <Box marginBottom="spacing.6">
-          <Controller
-            name="email"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Email or ID"
-                placeholder="Enter your email or ID"
-                isOptional={false}
-              />
-            )}
-          />
-        </Box>
-
-        {/* Password Field */}
-        <Box marginBottom="spacing.6" width={"100%"}>
-          <Controller
-            name="password"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Password"
-                placeholder="Enter your password"
-                type="password"
-                isOptional={false}
-                isFullWidth
-              />
-            )}
-          />
-        </Box>
-
-        {/* Submit Button */}
-        <Box textAlign="center" marginBottom="spacing.8" width="100%">
-          <Button type="submit" isFullWidth>
-            Log In
-          </Button>
-        </Box>
-
-        {/* Forgot Password */}
-        <Box textAlign="center" marginBottom="spacing.8">
-          <Link href="/forgot-password">Forgot password?</Link>
-        </Box>
-
-        {/* Footer */}
-        <Box textAlign="center" as="p">
-          © Aviv group GmbH 2023 – Our{" "}
-          <Link href="/terms">Terms and conditions</Link> and{" "}
-          <Link href="/privacy">Privacy Policy</Link> will apply
-        </Box>
-      </Box>
-    </Box>
+        <div>Performance Details</div>
+      </PerformanceCard>
+      <ProgressBar
+        aria-label="Progress bar"
+        size="8"
+        value={stats?.progressValue || 50}
+        type="stepper"
+      />
+      <Rating
+        hasRatingDisplayed
+        rating={stats?.rating || 5}
+        reviews={stats?.reviews || 329}
+        size="24"
+      />
+    </MainLayout>
   );
 };
 
-export default LoginForm;
+export default HomePage;

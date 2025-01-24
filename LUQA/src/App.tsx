@@ -31,14 +31,11 @@ const App: React.FC = () => {
       <Routes>
         <Route element={<ProtectedRoute type="protected" />}>
           <Route path="/" element={<Home />} />
-
           <Route path="/users" element={<Users />} />
         </Route>
 
         <Route element={<ProtectedRoute type="auth" />}>
           <Route path="/auth/login" element={<LoginPage />} />
-        </Route>
-        <Route path="/auth/register" element={<ProtectedRoute type="auth" />}>
           <Route path="/auth/register" element={<RegisterPage />} />
         </Route>
       </Routes>

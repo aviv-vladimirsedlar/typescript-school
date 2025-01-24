@@ -2,8 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { loginRequest } from "../../../auth.api";
-import { loginSuccess } from "../../../auth.slice";
+import { loginRequest } from "../auth.api";
+import { loginSuccess } from "../auth.slice";
 
 export const useLogin = () => {
   const dispatch = useDispatch();

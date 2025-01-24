@@ -3,7 +3,7 @@ import { Button, TextField } from "@gemini/ui";
 import React from "react";
 import { Controller } from "react-hook-form";
 
-import { useLoginForm } from "./hooks/useLoginForm";
+import { useLoginForm } from "./useLoginForm";
 
 export const LoginForm: React.FC = () => {
   const { control, handleSubmit, onSubmit, isLoading, errors, errorMessage } =

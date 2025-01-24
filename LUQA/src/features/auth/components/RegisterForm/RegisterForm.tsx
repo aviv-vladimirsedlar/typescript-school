@@ -42,6 +42,7 @@ export const RegisterForm: React.FC = () => {
                     : undefined
                 }
                 isOptional={false}
+                isFullWidth
               />
             )}
           />
@@ -60,6 +61,7 @@ export const RegisterForm: React.FC = () => {
                     : undefined
                 }
                 isOptional={false}
+                isFullWidth
               />
             )}
           />

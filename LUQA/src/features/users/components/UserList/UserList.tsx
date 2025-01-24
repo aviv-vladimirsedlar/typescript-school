@@ -2,8 +2,9 @@ import { Box } from "@gemini/core";
 import { Button } from "@gemini/ui";
 import React from "react";
 
-import { useCurrentUser } from "../../auth/hooks/useCurrentUser";
-import { useUserList } from "./hooks/useUserList";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useUserList } from "../../hooks/useUserList";
+import { User } from "../../users.types";
 
 export const UserList = () => {
   const { assignUserId, data, handleAssignAuthor, isLoadingList } =
@@ -42,7 +43,7 @@ export const UserList = () => {
           </Box>
         </Box>
         <Box as="tbody">
-          {data.map((user, index) => {
+          {data.map((user: User, index: number) => {
             const roles = user.roles
               ?.map((userRole) => userRole.role.name)
               .join(", ");

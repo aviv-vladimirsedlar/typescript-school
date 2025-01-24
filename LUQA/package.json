@@ -19,11 +19,11 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@gemini/core": "2.7.0",
-    "@gemini/icons": "2.7.0",
-    "@gemini/logos": "2.0.1",
-    "@gemini/patterns-tag": "0.2.0",
-    "@gemini/ui": "2.6.0",
+    "@gemini/core": "2.8.0",
+    "@gemini/icons": "2.8.0",
+    "@gemini/logos": "2.8.0",
+    "@gemini/patterns-tag": "0.3.0",
+    "@gemini/ui": "2.8.0",
     "@hookform/resolvers": "^3.10.0",
     "@reduxjs/toolkit": "^2.3.0",
     "@tanstack/react-query": "^5.64.2",

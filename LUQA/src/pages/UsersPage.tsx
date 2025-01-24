@@ -1,7 +1,7 @@
 import React from "react";
 
 import { MainLayout } from "../common/layouts/MainLayout";
-import { UserList } from "../features/users/UserList/UserList";
+import { UserList } from "../features/users/components/UserList/UserList";
 
 const Users: React.FC = () => (
   <MainLayout>
