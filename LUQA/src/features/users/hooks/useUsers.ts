@@ -17,7 +17,6 @@ export const useUsers = () => {
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
-  // Handle success and error side effects
   useEffect(() => {
     if (data) {
       dispatch(updateUserList(data));
