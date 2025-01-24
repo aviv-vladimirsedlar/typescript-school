@@ -5,7 +5,7 @@ import React from "react";
 
 import { SkeletonWrapper } from "../../../../common/components/SkeletonWrapper/SkeletonWrapper";
 
-export interface PerformanceCardProps extends CardProps {
+export interface PerformanceCardProps extends Omit<CardProps, "children"> {
   time: string;
   productionStatus: string;
   ca: number;

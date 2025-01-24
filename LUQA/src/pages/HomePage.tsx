@@ -1,4 +1,3 @@
-import { ProgressBar, Rating } from "@gemini/ui";
 import React from "react";
 
 import { MainLayout } from "../common/layouts/MainLayout";
@@ -23,20 +22,6 @@ const HomePage: React.FC = () => {
         borderRadius={"8"}
         backgroundVariant={"light"}
         isLoading={isLoading}
-      >
-        <div>Performance Details</div>
-      </PerformanceCard>
-      <ProgressBar
-        aria-label="Progress bar"
-        size="8"
-        value={stats?.progressValue || 50}
-        type="stepper"
-      />
-      <Rating
-        hasRatingDisplayed
-        rating={stats?.rating || 5}
-        reviews={stats?.reviews || 329}
-        size="24"
       />
     </MainLayout>
   );
