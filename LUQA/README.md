@@ -1,112 +1,90 @@
-# Frontend Project
+# React LUQA Project
 
-This project is a React application configured with TypeScript, Redux, and Tailwind CSS. It includes ESLint and Prettier for code quality and integrates testing through WebdriverIO with Cucumber for BDD, along with Storybook for UI component documentation.
+This project is a scalable and maintainable React application designed as a sales panel for internal use. The application allows salespeople to manage leads, track projects, and access important customer information, following best practices for folder structure, state management, and dependency usage.
+
+---
 
 ## Table of Contents
 
-- [Technologies](#technologies)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Available Scripts](#available-scripts)
+- [Project Features](#project-features)
+- [Folder Structure](#folder-structure)
+- [Dependencies](#dependencies)
+- [Setup Instructions](#setup-instructions)
+- [Contributing](#contributing)
 
-## Technologies
+---
 
-- **React:** A JavaScript library for building user interfaces.
-- **Redux & React-Query:** State management tools.
-- **TypeScript:** A superset of JavaScript that adds typing.
-- **Tailwind CSS:** A utility-first CSS framework for styling.
-- **Formik & Yup:** Form management and validation libraries.
-- **Storybook:** An open-source tool for developing UI components in isolation.
-- **WebdriverIO & Cucumber:** For end-to-end testing.
+## Project Features
 
-## Features
+- **Feature-Based Folder Structure**: Encapsulates logic within individual features for scalability and modularity.
+- **Reusable Modules**: Shared components, hooks, and utilities are centralized in the `common` folder to encourage reusability.
+- **State Management**: Uses Redux Toolkit for global state and React-Query for server-side state.
+- **Efficient Forms**: Implements React-Hook-Form with Zod for lightweight, schema-based form handling.
+- **API Communication**: Axios is used for customizable and consistent API requests.
 
-- **TypeScript Support:** Strongly typed code with TypeScript.
-- **State Management:** Redux and React-Query for efficient state management.
-- **CSS Framework:** Tailwind CSS for styling.
-- **Form Management:** Formik and Yup for form handling and validation.
-- **Testing Setup:** Includes both Jest and WebdriverIO with Cucumber for end-to-end and component tests.
-- **Storybook Integration:** Document and visually test UI components.
-- **CI/CD Ready:** Configured with Chromatic for visual regression testing on Storybook.
+---
 
-## Getting Started
+## Folder Structure
+
+Below is the high-level folder structure:
+
+src/
+|– common/ # Shared reusable modules
+| |– components/ # Shared reusable UI components
+| |– types/ # Shared reusable types
+| |– hooks/ # Shared reusable hooks
+| |– layouts/ # Shared layouts (Navbar, Sidebar, etc.)
+| |– utils/ # Utility functions and helpers
+|
+|– config/ # Global configurations and state management
+|– features/ # Feature-specific modules
+|– pages/ # High-level route components
+|– tests/ # Dedicated testing folder (e2e tests)
+|– App.tsx
+|– index.tsx
+|– routes.ts
+
+For a detailed explanation of the folder structure, refer to the project's [Architectural Decision Record (ADR)](./docs/ADR.md).
+
+---
+
+## Dependencies
+
+The project uses the following core libraries:
+
+1. **[React-Query](https://tanstack.com/query/latest)**: Efficient server-state management.
+2. **[Redux Toolkit](https://redux-toolkit.js.org/)**: Simplified global state management.
+3. **[React-Hook-Form](https://react-hook-form.com/)**: Lightweight form handling.
+4. **[Zod](https://zod.dev/)**: Schema-based form validation.
+5. **[Axios](https://axios-http.com/)**: API client with interceptors for request/response customization.
+
+For the full list of dependencies, check the `package.json` file.
+
+---
+
+## Setup Instructions
 
 ### Prerequisites
 
-- **Node.js**: Make sure you have Node.js installed.
-- **Yarn**: Use Yarn for package management.
+Ensure you have the following installed:
 
-### Installation
+- **Node.js** (v16+)
+- **npm** or **yarn**
 
-Clone the repository and install dependencies:
+### Steps
 
-```bash
-git clone https://github.com/your-repo/frontend.git
-cd frontend
-yarn install
-```
+1. **Clone the Repository**
 
-## Project structure
+   ```bash
+   git clone <repository-url>
+   cd <repository-folder>
 
-```graph
+   ```
 
-├── src
-│   ├── common
-│   │   ├── components  # Reusable components
-│   │   └── hooks       # Custom hooks
-│   ├── modules         # App-specific feature modules
-│   ├── layouts         # Layout components
-│   └── store           # Redux store setup and slices
-├── tests               # End-to-end tests with WebdriverIO and Cucumber
-│   ├── features        # Cucumber feature files
-│   ├── pageobjects     # Page objects for WebdriverIO tests
-│   └── step-definitions # Step definitions for Cucumber tests
-├── .storybook          # Storybook configuration
-└── public
+2. **Install Dependencies**
 
-```
+   npm install
 
-## Terraform Deployment
+3. **Run the Application**
 
-For detailed instructions on deploying infrastructure with Terraform, see the [Terraform Deployment Guide](infra/README.md).
-
-## Available Scripts
-
-In the project directory, you can run the following commands:
-
-#### Start the App
-
-`yarn start` - Runs the app in development mode on http://localhost:3000.
-
-#### Build the App
-
-`yarn build` - Builds the app for production to the build folder.
-
-#### Run Tests
-
-`yarn test` - Launches the test runner in the interactive watch mode.
-
-#### Format Code
-
-`yarn format` - Formats code according to Prettier configuration.
-
-#### Lint Code
-
-`yarn lint` - Checks code for issues using ESLint.
-
-#### Fix Lint Errors
-
-`yarn lint:fix` - Automatically fixes lint errors.
-
-#### Run WebdriverIO Tests
-
-`yarn wdio` - Runs the end-to-end tests with WebdriverIO.
-
-#### Start Storybook
-
-`yarn storybook` - Launches Storybook on http://localhost:6006 for developing and testing UI components.
-
-#### Build Storybook
-
-`yarn build-storybook` - Builds Storybook as a static web application in the storybook-static directory.
+   source dev
