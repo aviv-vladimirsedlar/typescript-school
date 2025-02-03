@@ -7,8 +7,11 @@ import { LoginForm } from "../features/auth/components/LoginForm/LoginForm";
 
 const LoginPage: React.FC = () => (
   <AuthLayout>
-    <LoginForm />
 
+
+
+
+              <LoginForm />
     <Box
       display="flex"
       justifyContent="center"
